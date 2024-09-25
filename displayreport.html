@@ -81,10 +81,18 @@
             font-size: smaller;
         }
 		
-		table.dataTable tbody tr.selected>* {
-			box-shadow: inset 0 0 0 9999px #7088be !important;
-		}
+	table.dataTable tbody tr.selected>* {
+		box-shadow: inset 0 0 0 9999px #7088be !important;
+	}
 
+	 table.dataTable td {
+            font-size: 14px;
+        }
+
+        table.dataTable th {
+            font-size: 14px;
+        }
+	
         .page-item .page-link {
             color: #7088be;
             box-shadow: none;
@@ -136,26 +144,52 @@
 			border-color: gray;
 			color: white;
 		} */
+
+	div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input {
+		padding: 0.4em;
+		margin-right: 0.8em;
+		min-width: 5em;
+		max-width: 20em;
+		color: inherit;
+		font-size: .85rem;
+        }
+       
+        div.dtsb-searchBuilder button.dtsb-button, div.dtsb-searchBuilder select {
+		--bs-btn-padding-y: .25rem; 
+		--bs-btn-padding-x: .5rem; 
+		--bs-btn-font-size: .85rem;
+		font-size: .85rem;
+        }
 		
-		.btn-small {
-			--bs-btn-padding-y: .25rem; 
-			--bs-btn-padding-x: .5rem; 
-			--bs-btn-font-size: .85rem;
-		}
-		
-		.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn.dropdown-toggle-split:first-child, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
-			border-top-right-radius: inherit;
-			border-bottom-right-radius: inherit;
-		}
+	.btn-small {
+		--bs-btn-padding-y: .25rem; 
+		--bs-btn-padding-x: .5rem; 
+		--bs-btn-font-size: .85rem;
+	}
+	
+	.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn.dropdown-toggle-split:first-child, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+		border-top-right-radius: inherit;
+		border-bottom-right-radius: inherit;
+	}
 		
 		/* .dropdown-menu {
             --bs-dropdown-min-width: 5rem !important;	
 		} */
 		
-		.dropdown-item.active, .dropdown-item:active {
-			background-color: #a3a0a0;
-			color: white;
-		}
+	.dropdown-item.active, .dropdown-item:active {
+		background-color: #a3a0a0;
+		color: white;
+	}
+
+	.custom-popover {
+		--bs-popover-max-width: 200px;
+		/* --bs-popover-border-color: var(--bs-primary);
+		--bs-popover-header-bg: var(--bs-primary);
+		--bs-popover-header-color: var(--bs-white); */
+		--bs-popover-body-padding-x: 1rem;
+		--bs-popover-body-padding-y: .5rem;
+		--bs-popover-font-size: .75rem;
+        }
 
         /* div.dt-buttons div.dropdown-menu {
             
@@ -188,9 +222,9 @@
 
         /*scrolling inside dropdown*/
         div.dt-button-collection { 
-			max-height:300px;
-            overflow-y:auto;
-		} 
+		max-height:300px;
+		overflow-y:auto !important;
+	} 
 
         .form-control:focus {
             border-color: #828a91;
@@ -263,7 +297,7 @@
                     && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                         if(line <= 3){
                             var partsOfStr = lines[line].split(',');
-                            console.log(partsOfStr);
+                            //console.log(partsOfStr);
                             if(!partsOfStr.includes('Student #')){						
                                 console.log("EXIT NOT ACCPETAPLE FILE");
                                 document.getElementById("output").style.display = 'block';
@@ -274,16 +308,16 @@
                         }
                         if(lines[line].includes('Homeroom')){
                             str = lines[line].split("Homeroom");
-                            console.log(str);
+                            //console.log(str);
                             var newStr = str[str.length - 1].replaceAll(",", "");
-                            console.log(newStr);
+                            //console.log(newStr);
                         }
                         if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
                             let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
                             let resultNull = pattern.test(lines[line]);
                             var withRoom = newStr+","+lines[line];
                             var result = withRoom.match(pattern);
-                            console.log(result);
+                            //console.log(result);
                             if(resultNull == true){
                                 console.log("resultNull "+resultNull);
                             }
@@ -371,7 +405,11 @@
                                         },
                                     ]
                                 },                                                       
-                                
+                                {
+                                    extend: 'colvis',
+                                    columns: ':visible',
+                                    /* popoverTitle: 'Column visibility selector' */
+                                }
                                 /*{
                                     extend: 'excelHtml5',
                                     exportOptions: {
@@ -406,7 +444,7 @@
                             last: 'Last'
                         },
                         searchBuilder: {
-                            add: 'Search Filter',
+                            add: 'Filter',
                             title: 'Search Builder',                            
                         }
                     },
@@ -448,15 +486,15 @@
                         { title: 'Dis Code' },
                         { title: '' },
                         { title: '' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
-                        { title: '<a href="#" data-bs-toggle="popover" title="Program Year" style="text-decoration:none">PY</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" style="text-decoration:none">PY</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
                         { title: '' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },		
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>' },
+                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },		
                     ],
                     data: dataSet,			
                     drawCallback: function () { 
