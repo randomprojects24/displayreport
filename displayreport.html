@@ -288,8 +288,11 @@
         </div>           
         <div id="reportDiv" class="" style="padding:40px;margin: auto;display:none">
             <h5 id="reportTitle" class="center"></h5>
-            <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover " style="width:100%"></table>
-            <table id="reportTbl1" class="table table-sm table-striped table-bordered table-hover " style="width:100%"></table>
+            <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
+        </div>
+        <div id="report1Div" class="" style="padding:40px;margin: auto;display:none">
+            <h5 id="report1Title" class="center"></h5>
+            <table id="reportTbl1" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
         </div>
     </div>    	
 
@@ -298,7 +301,7 @@
         document.getElementById('file').onchange = function() {	
             sessionStorage.clear();
             document.getElementById("output").style.display = 'none';
-            document.getElementById("reportDiv").style.display = 'block';
+            
             var file = this.files[0];
             var items = [];
             var reader = new FileReader();
@@ -320,6 +323,7 @@
                     var element = document.getElementById("errorAlert");
                     element.classList.remove("show");
                     if (reportNameLine.includes('List of Students in Program')) {
+                        document.getElementById("reportDiv").style.display = 'block';
                         document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
                         var rprtTtle = document.getElementById("reportTitle").innerHTML;
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
@@ -362,8 +366,9 @@
                         }
                     } 
                     else if (reportNameLine.includes('List of Students To Take ACCESS')) {
-                        document.getElementById("reportTitle").innerHTML = 'List of Students To Take ACCESS';
-                        var rprtTtle = document.getElementById("reportTitle").innerHTML;
+                        document.getElementById("report1Div").style.display = 'block';
+                        document.getElementById("report1Title").innerHTML = 'List of Students To Take ACCESS';
+                        var rprtTtle = document.getElementById("report1Title").innerHTML;
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -414,7 +419,7 @@
                 }
                 var dataSet = items;
                 //Create Table
-                if (document.getElementById("reportTitle").innerHTML == 'List of Students in Program') {
+                if (rprtTtle == 'List of Students in Program') {
                     $('#reportTbl').DataTable({
                         destroy: true,
                         fixedHeader: true,                
@@ -644,7 +649,7 @@
                             var tblName = $(this).attr('id');                    
                         }
                     });
-                } else if (document.getElementById("reportTitle").innerHTML == 'List of Students To Take ACCESS') {
+                } else if (rprtTtle == 'List of Students To Take ACCESS') {
                     $('#reportTbl1').DataTable({
                         destroy: true,
                         fixedHeader: true,                
@@ -913,12 +918,12 @@
 
         $(document).on('click','.dtsb-search',function(){
             //alert("You clicked the element with and ID of 'test-element'");
-            $("#reportTbl").LoadingOverlay("show", {
+            $(".reportTbl").LoadingOverlay("show", {
                 //background: "#cae4fa",
                 size: '75',
                 maxSize: '75',
             });
-            $("#reportTbl").LoadingOverlay("hide", true);
+            $(".reportTbl").LoadingOverlay("hide", true);
         });
 	</script>
   </body>
