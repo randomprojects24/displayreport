@@ -70,8 +70,8 @@
         }
 
         div.dataTables_wrapper div.dataTables_info {
-			padding-top: .2em;
-		}
+	    padding-top: .2em;
+	}
 
         div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
             background-color: #7088be;
@@ -81,11 +81,11 @@
             font-size: smaller;
         }
 		
-	table.dataTable tbody tr.selected>* {
-		box-shadow: inset 0 0 0 9999px #7088be !important;
-	}
+        table.dataTable tbody tr.selected>* {
+            box-shadow: inset 0 0 0 9999px #7088be !important;
+        }
 
-	 table.dataTable td {
+    	table.dataTable td {
             font-size: 14px;
         }
 
@@ -93,7 +93,7 @@
             font-size: 14px;
         }
 
-	table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
+    	table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
             text-align: left;
         }
 	
@@ -131,23 +131,23 @@
             background-color: #ffc107;
         }
 
-		/* .page-link {
-		  color: #063970;
-		  background-color: #fff;
-		  border: 1px solid #dee2e6;
-		}
+	/* .page-link {
+	  color: #063970;
+	  background-color: #fff;
+	  border: 1px solid #dee2e6;
+	}
 
-		.page-link:hover {
-		  color: #fff !important;
-		  background-color: gray !important;
-		  border-color: #063970 !important;
-		}
+	.page-link:hover {
+	  color: #fff !important;
+	  background-color: gray !important;
+	  border-color: #063970 !important;
+	}
 
-		.paginate_button.active > .page-link {
-			background-color: gray !important;
-			border-color: gray;
-			color: white;
-		} */
+	.paginate_button.active > .page-link {
+		background-color: gray !important;
+		border-color: gray;
+		color: white;
+	} */
 
 	div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input {
 		padding: 0.4em;
@@ -196,17 +196,17 @@
         }
 
 	@media (min-width: 768px) {
-            .col-md {
-                flex: none;
-                width: auto;
-            }
+        .col-md {
+            flex: none;
+            width: auto;
         }
+    }
 
-        @media (min-width: 768px) {
-            .justify-content-md-center {
-                justify-content: left !important;
-            }
+    @media (min-width: 768px) {
+        .justify-content-md-center {
+            justify-content: left !important;
         }
+    }
 
         /* div.dt-buttons div.dropdown-menu {
             
@@ -239,9 +239,9 @@
 
         /*scrolling inside dropdown*/
         div.dt-button-collection { 
-		max-height:300px;
-		overflow-y:auto !important;
-	} 
+            max-height:300px;
+            overflow-y:auto !important;
+        } 
 
         .form-control:focus {
             border-color: #828a91;
@@ -281,9 +281,13 @@
             <a href="displayreport.html">Download File</a>
         </div>
         <br />
-        <p id="spnHeadertxt" class="center"></p>            
+        <p id="spnHeadertxt" class="center"></p> 
+        <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="margin: auto;width: 30%;">            
+            <strong>File not formatted properly</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>           
         <div id="reportDiv" class="" style="padding:40px;margin: auto;display:none">
-            <h5 class="center">List of Students in Program</h5>
+            <h5 id="reportTitle" class="center"></h5>
             <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover " style="width:100%"></table>
         </div>
     </div>    	
@@ -310,243 +314,600 @@
                 // By lines
                 var lines = text.split('\n');	
                 for (var line = 0; line < lines.length; line++) {
-                    if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
-                    && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
-                        if(line <= 3){
-                            var partsOfStr = lines[line].split(',');
-                            //console.log(partsOfStr);
-                            if(!partsOfStr.includes('Student #')){						
-                                console.log("EXIT NOT ACCPETAPLE FILE");
-                                document.getElementById("output").style.display = 'block';
-                                document.getElementById("output").innerHTML = 'File not formatted properly';
-                                document.getElementById("output").style.color = "red";
-                                break;
-                            }
-                        }
-                        if(lines[line].includes('Homeroom')){
-                            str = lines[line].split("Homeroom");
-                            //console.log(str);
-                            var newStr = str[str.length - 1].replaceAll(",", "");
-                            //console.log(newStr);
-                        }
-                        if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
-                            let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
-                            let resultNull = pattern.test(lines[line]);
-                            var withRoom = newStr+","+lines[line];
-                            var result = withRoom.match(pattern);
-                            //console.log(result);
-                            if(resultNull == true){
-                                console.log("resultNull "+resultNull);
-                            }
-                            else{
-                                console.log("break "+resultNull);
-                                break;
-                            }
-                            items.push(result);
-                        }
-                    }
-                }
-                var dataSet = items;            
-                $('#reportTbl').DataTable({
-                    destroy: true,
-                    fixedHeader: true,                
-                    fixedColumns: {
-                        start: 4
-                    },
-                    order: [[4, 'asc']],
-                    select: true,
-                    //lengthMenu: [[50, 100 - 1], [50, 100, "All"]],
-                    
-                    /* scrollCollapse: true,
-                    scrollX: true,
-                    scrollY: 500, */
-                    
-                    /* buttons: [
-                                {
-                                    extend: 'collection',
-                                    className: 'btn-small',
-                                    text: 'Export',
-                                    buttons: [                        
-                                        {
-                                            extend: 'pdfHtml5',
-                                            orientation: 'landscape',
-                                            title: 'List of Students in Program'
-                                        },
-                                        'csv',
-                                        'excel',
-                                        
-                                    ]
-                                },                
-                            ], */                
-                    layout: {
-                        top1: {                        
-                            searchBuilder: {
-                                columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
-                                //liveSearch: false,                  
-                            }
-                        },
-                        topStart: {
-                            buttons: [       
-                                {
-                                    extend:'pageLength',
-                                    className: 'btn-small',
-                                    //text: 'bb',
-                                }, 
-                                {
-                                    extend: 'collection',
-                                    className: 'btn-small',
-                                    text: 'Export',
-                                    buttons: [                        
-                                        {
-                                            extend: 'pdfHtml5',
-                                            orientation: 'landscape',
-                                            pageSize : 'LEGAL',
-                                            title: 'List of Students in Program',
-                                            exportOptions: {
-                                                columns: ':visible'
-                                            }
-                                        },
-                                        {
-                                            extend: 'csv',
-                                            title: 'List of Students in Program',
-                                            exportOptions: {
-                                                columns: ':visible'
-                                            }
-                                        },
-                                        {
-                                            extend: 'excel',
-                                            title: 'List of Students in Program',
-                                            exportOptions: {
-                                                columns: ':visible'
-                                            }
-                                        },
-                                    ]
-                                },                                                       
-                                {
-                                    extend: 'colvis',
-                                    columns: ':visible',
-                                    /* popoverTitle: 'Column visibility selector' */
+                    var reportNameLine = lines[1].split(',');
+                    //console.log("Line 1 "+reportNameLine);
+                    var element = document.getElementById("errorAlert");
+                    element.classList.remove("show");
+                    if (reportNameLine.includes('List of Students in Program')) {
+                        document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
+                        if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
+                        && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
+                            if(line <= 3){
+                                var partsOfStr = lines[line].split(',');
+                                //console.log(partsOfStr);
+                                //console.log('List of Students in Program '+partsOfStr);
+                                if(!partsOfStr.includes('Student #')){						
+                                    console.log("EXIT NOT ACCPETAPLE FILE");
+                                    /* document.getElementById("output").style.display = 'block';
+                                    document.getElementById("output").innerHTML = 'File not formatted properly';
+                                    document.getElementById("output").style.color = "red"; */
+                                    var element = document.getElementById("errorAlert");
+                                    element.classList.add("show");
+                                    break;
                                 }
-                                /*{
-                                    extend: 'excelHtml5',
-                                    exportOptions: {
-                                        columns: ':visible'
-                                    },
-                                    className: 'btn-small'
-                                },
-                                {
-                                    extend: 'collection',
-                                    className: 'btn-small',
-                                    buttons: [
-
-                                    ]
-                                },  */                                                                  
-                            ]
-                        },
-                        /* bottom1Start: {
-                            buttons: ['pageLength'],
-                        }, */
-                    },
-                    /* lengthMenu: [
-                        [10, 25, 50, -1],
-                        [10, 25, 50, 'All']
-                    ], */		
-                    language: {
-                        search: '_INPUT_',
-                        searchPlaceholder: 'Search...',
-                        paginate: {
-                            first: 'First',
-                            next: 'Next',
-                            previous: 'Previous',
-                            last: 'Last'
-                        },
-                        searchBuilder: {
-                            add: 'Add Filter',
-                            title: 'Search Builder',                            
-                        }
-                    },
-                    columnDefs: [
-                        { 
-                            visible: false, targets: [2,4,7,11,12,14,17,18,22]                         
-                        },
-                        { 
-                            searchable: false, targets: [2,4,7,11,12,14,17,18,22] 
-                        },
-                        /*{
-                            targets: '_all', className: 'dt-body-left'
-                        },*/
-                    ],
-                    columns: [
-                        { title: 'Room' },
-                        { title: 'Student#' },
-                        { title: '' },
-                        { title: 'Student Name',
-                        render: function ( data, type, row, meta ) {
-                            if ( data === null ) {// Do some type checking
-                                return "";
                             }
-                            return data.replace(/"/g, "");
-                        }			
-                        },
-                        { title: '' },
-                        { title: 'Grade' },
-                        { title: 'Language' },
-                        { title: '' },
-                        { title: 'Program Model' },
-                        { title: 'Placement Model' },
-                        { title: 'Instructional Context' },
-                        { title: '' },
-                        { title: '' },
-                        { title: 'Assessment Accommodations' },
-                        { title: '' },
-                        { title: 'Periods per Week' },
-                        { title: 'Dis Code' },
-                        { title: '' },
-                        { title: '' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" style="text-decoration:none">PY</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
-                        { title: '' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>' },
-                        { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },		
-                    ],
-                    data: dataSet,			
-                    drawCallback: function () { 
-                        let tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                        let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {
-                            boundary: document.body,
-                            container: 'body',
-                            trigger: 'hover'
-                        })); 
-                        tooltipList.forEach((tooltip) => { $('.tooltip').hide(); });
-                        
-                        let popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-                        let popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
-                            boundary: document.body,
-                            container: 'body',
-                            placement: 'top',
-                            trigger: 'hover'
-                        })); 				  
-                        popoverList.forEach((popover) => { $('.popover').hide(); });	
-		    	var tblName = $(this).attr('id');
-                        $("#"+tblName).LoadingOverlay("show", {
-                            //background: "#cae4fa",
-                            size: '75',
-                            maxSize: '75',
-                        });
-                        $("#"+tblName).LoadingOverlay("hide", true);
-                    },
-                    initComplete: function() {
-                        var tblName = $(this).attr('id');                    
+                            if(lines[line].includes('Homeroom')){
+                                str = lines[line].split("Homeroom");
+                                //console.log(str);
+                                var newStr = str[str.length - 1].replaceAll(",", "");
+                                //console.log(newStr);
+                            }
+                            if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
+                                let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
+                                let resultNull = pattern.test(lines[line]);
+                                var withRoom = newStr+","+lines[line];
+                                var result = withRoom.match(pattern);
+                                //console.log(result);
+                                if(resultNull == true){
+                                    console.log("resultNull "+resultNull);
+                                }
+                                else{
+                                    console.log("break "+resultNull);
+                                    break;
+                                }
+                                items.push(result);
+                            }
+                        }
+                    } 
+                    else if (reportNameLine.includes('List of Students To Take ACCESS')) {
+                        document.getElementById("reportTitle").innerHTML = 'List of Students To Take ACCESS';
+                        if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
+                        && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
+                            if(line <= 3){
+                                var partsOfStr = lines[line].split(',');
+                                /* console.log('Line '+line);
+                                console.log('List of Students To Take ACCESS');
+                                console.log('Headers:');
+                                console.log(partsOfStr); */
+                                if(!partsOfStr.includes('Student #')){						
+                                    console.log("EXIT NOT ACCPETAPLE FILE");
+                                    /* document.getElementById("output").style.display = 'block';
+                                    document.getElementById("output").innerHTML = 'File not formatted properly';
+                                    document.getElementById("output").style.color = "red"; */
+                                    var element = document.getElementById("errorAlert");
+                                    element.classList.add("show");
+                                    break;
+                                }
+                            }
+                            if(lines[line].includes('Homeroom')){
+                                str = lines[line].split("Homeroom");
+                                //console.log(str);
+                                var newStr = str[str.length - 1].replaceAll(",", "");
+                                //console.log(newStr);
+                            }
+                            if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
+                                let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
+                                let resultNull = pattern.test(lines[line]);
+                                var withRoom = newStr+","+lines[line];
+                                var result = withRoom.match(pattern);
+                                console.log('Result ' + result);
+                                if(resultNull == true){
+                                    console.log("resultNull "+resultNull);
+                                }
+                                else{
+                                    console.log("break "+resultNull);
+                                    break;
+                                }
+                                items.push(result);
+                            }
+                        }
                     }
-                });
+                    else
+                    {                                                
+                        var element = document.getElementById("errorAlert");
+                        element.classList.add("show");
+                        return;
+                    }                    
+                }
+                var dataSet = items;
+                //Create Table
+                if (document.getElementById("reportTitle").innerHTML == 'List of Students in Program') {
+                    $('#reportTbl').DataTable({
+                        destroy: true,
+                        fixedHeader: true,                
+                        fixedColumns: {
+                            start: 4
+                        },
+                        order: [[4, 'asc']],
+                        select: true,
+                        //lengthMenu: [[50, 100 - 1], [50, 100, "All"]],
+                        
+                        /* scrollCollapse: true,
+                        scrollX: true,
+                        scrollY: 500, */
+                        
+                        /* buttons: [
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        text: 'Export',
+                                        buttons: [                        
+                                            {
+                                                extend: 'pdfHtml5',
+                                                orientation: 'landscape',
+                                                title: 'List of Students in Program'
+                                            },
+                                            'csv',
+                                            'excel',
+                                            
+                                        ]
+                                    },                
+                                ], */                
+                        layout: {
+                            top1: {                        
+                                /* searchBuilder: {
+                                    columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                    //liveSearch: false,                  
+                                } */
+                                searchBuilder: {
+                                    
+                                    columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                    /* preDefined: {
+                                        criteria: [
+                                            {
+                                                condition: '!=',
+                                                data: 'Dis Code',
+                                                value: ['']
+                                            },
+                                            {
+                                                condition: '!=',
+                                                data: 'Dis Code',
+                                                value: ['504']
+                                            },
+                                            {
+                                                condition: '=',
+                                                data: 'Grade',
+                                                value: ['5']
+                                            },                                        
+                                        ],
+                                        logic: 'AND'
+                                    }, */
+                                },
+                                /* buttons: [       
+                                    {
+                                        text: 'Reload',
+                                        action: function ( e, dt, node, config ) {
+                                            alert("Button");
+                                        }
+                                    },
+                                                                                            
+                                ] */
+                            },
+                            topStart: {
+                                buttons: [       
+                                    {
+                                        extend:'pageLength',
+                                        className: 'btn-small',
+                                        //text: 'bb',
+                                    }, 
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        text: 'Export',
+                                        buttons: [                        
+                                            {
+                                                extend: 'pdfHtml5',
+                                                orientation: 'landscape',
+                                                pageSize : 'LEGAL',
+                                                title: 'List of Students in Program',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                            {
+                                                extend: 'csv',
+                                                title: 'List of Students in Program',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                            {
+                                                extend: 'excel',
+                                                title: '',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                        ]
+                                    },                                                       
+                                    {
+                                        extend: 'colvis',
+                                        columns: ':visible',
+                                        /* popoverTitle: 'Column visibility selector' */
+                                    }
+                                    /*{
+                                        extend: 'excelHtml5',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        },
+                                        className: 'btn-small'
+                                    },
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        buttons: [
+
+                                        ]
+                                    },  */                                                                  
+                                ]
+                            },
+                            /* bottom1Start: {
+                                buttons: ['pageLength'],
+                            }, */
+                        },
+                        /* lengthMenu: [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, 'All']
+                        ], */		
+                        language: {
+                            search: '_INPUT_',
+                            searchPlaceholder: 'Search...',
+                            paginate: {
+                                first: 'First',
+                                next: 'Next',
+                                previous: 'Previous',
+                                last: 'Last'
+                            },
+                            searchBuilder: {
+                                add: 'Add Filter',
+                                title: 'Search Builder',                            
+                            }
+                        },
+                        columnDefs: [
+                            { 
+                                visible: false, targets: [2,4,7,11,12,14,17,18,22]                         
+                            },
+                            { 
+                                searchable: false, targets: [2,4,7,11,12,14,17,18,22] 
+                            },
+                            /*{
+                                targets: '_all', className: 'dt-body-left'
+                            },*/
+                        ],
+                        columns: [
+                            { title: 'Room' },
+                            { title: 'Student#' },
+                            { title: '' },
+                            { title: 'Student Name',
+                            render: function ( data, type, row, meta ) {
+                                if ( data === null ) {// Do some type checking
+                                    return "";
+                                }
+                                return data.replace(/"/g, "");
+                            }			
+                            },
+                            { title: '' },
+                            { title: 'Grade' },
+                            { title: 'Language' },
+                            { title: '' },
+                            { title: 'Program Model' },
+                            { title: 'Placement Model' },
+                            { title: 'Instructional Context' },
+                            { title: '' },
+                            { title: '' },
+                            { title: 'Assessment Accommodations' },
+                            { title: '' },
+                            { title: 'Periods per Week' },
+                            { title: 'Dis Code' },
+                            { title: '' },
+                            { title: '' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" style="text-decoration:none">PY</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
+                            { title: '' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },		
+                        ],
+                        data: dataSet,			
+                        drawCallback: function () { 
+                            let tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                            let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {
+                                boundary: document.body,
+                                container: 'body',
+                                trigger: 'hover'
+                            })); 
+                            tooltipList.forEach((tooltip) => { $('.tooltip').hide(); });
+                            
+                            let popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+                            let popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
+                                boundary: document.body,
+                                container: 'body',
+                                placement: 'top',
+                                trigger: 'hover'
+                            })); 				  
+                            popoverList.forEach((popover) => { $('.popover').hide(); });	
+                            var tblName = $(this).attr('id');
+                            $("#"+tblName).LoadingOverlay("show", {
+                                //background: "#cae4fa",
+                                size: '75',
+                                maxSize: '75',
+                            });
+                            $("#"+tblName).LoadingOverlay("hide", true);
+                        },
+                        initComplete: function() {
+                            var tblName = $(this).attr('id');                    
+                        }
+                    });
+                } else if (document.getElementById("reportTitle").innerHTML == 'List of Students To Take ACCESS') {
+                    $('#reportTbl').DataTable({
+                        destroy: true,
+                        fixedHeader: true,                
+                        fixedColumns: {
+                            start: 4
+                        },
+                        order: [[4, 'asc']],
+                        select: true,
+                        //lengthMenu: [[50, 100 - 1], [50, 100, "All"]],
+                        
+                        /* scrollCollapse: true,
+                        scrollX: true,
+                        scrollY: 500, */
+                        
+                        /* buttons: [
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        text: 'Export',
+                                        buttons: [                        
+                                            {
+                                                extend: 'pdfHtml5',
+                                                orientation: 'landscape',
+                                                title: 'List of Students in Program'
+                                            },
+                                            'csv',
+                                            'excel',
+                                            
+                                        ]
+                                    },                
+                                ], */                
+                        layout: {
+                            top1: {                        
+                                /* searchBuilder: {
+                                    columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                    //liveSearch: false,                  
+                                } */
+                                searchBuilder: {
+                                    
+                                    columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                    /* preDefined: {
+                                        criteria: [
+                                            {
+                                                condition: '!=',
+                                                data: 'Dis Code',
+                                                value: ['']
+                                            },
+                                            {
+                                                condition: '!=',
+                                                data: 'Dis Code',
+                                                value: ['504']
+                                            },
+                                            {
+                                                condition: '=',
+                                                data: 'Grade',
+                                                value: ['5']
+                                            },                                        
+                                        ],
+                                        logic: 'AND'
+                                    }, */
+                                },
+                                /* buttons: [       
+                                    {
+                                        text: 'Reload',
+                                        action: function ( e, dt, node, config ) {
+                                            alert("Button");
+                                        }
+                                    },
+                                                                                            
+                                ] */
+                            },
+                            topStart: {
+                                buttons: [       
+                                    {
+                                        extend:'pageLength',
+                                        className: 'btn-small',
+                                        //text: 'bb',
+                                    }, 
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        text: 'Export',
+                                        buttons: [                        
+                                            {
+                                                extend: 'pdfHtml5',
+                                                orientation: 'landscape',
+                                                pageSize : 'LEGAL',
+                                                title: 'List of Students in Program',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                            {
+                                                extend: 'csv',
+                                                title: 'List of Students in Program',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                            {
+                                                extend: 'excel',
+                                                title: '',
+                                                exportOptions: {
+                                                    columns: ':visible'
+                                                }
+                                            },
+                                        ]
+                                    },                                                       
+                                    {
+                                        extend: 'colvis',
+                                        columns: ':visible',
+                                        /* popoverTitle: 'Column visibility selector' */
+                                    }
+                                    /*{
+                                        extend: 'excelHtml5',
+                                        exportOptions: {
+                                            columns: ':visible'
+                                        },
+                                        className: 'btn-small'
+                                    },
+                                    {
+                                        extend: 'collection',
+                                        className: 'btn-small',
+                                        buttons: [
+
+                                        ]
+                                    },  */                                                                  
+                                ]
+                            },
+                            /* bottom1Start: {
+                                buttons: ['pageLength'],
+                            }, */
+                        },
+                        /* lengthMenu: [
+                            [10, 25, 50, -1],
+                            [10, 25, 50, 'All']
+                        ], */		
+                        language: {
+                            search: '_INPUT_',
+                            searchPlaceholder: 'Search...',
+                            paginate: {
+                                first: 'First',
+                                next: 'Next',
+                                previous: 'Previous',
+                                last: 'Last'
+                            },
+                            searchBuilder: {
+                                add: 'Add Filter',
+                                title: 'Search Builder',                            
+                            }
+                        },
+                        columnDefs: [
+                           /*  { 
+                                visible: false, targets: [1,5,6,11,12,14,17,18,22]                         
+                            }, */
+                            /* { 
+                                searchable: false, targets: [2,4,7,11,12,14,17,18,22] 
+                            }, */
+                            /*{
+                                targets: '_all', className: 'dt-body-left'
+                            },*/
+                        ],
+                        columns: [
+                            { title: 'Room' },
+                            { title: 'State ID' },
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'Student#' },
+                            { title: 'Student Name',
+                                render: function ( data, type, row, meta ) {
+                                    if ( data === null ) {// Do some type checking
+                                        return "";
+                                    }
+                                    return data.replace(/"/g, "");
+                                }			
+                            },
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'Grade' },
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'Language' },
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'HLS' },
+                            { title: '', visible: false, searchable: false,},
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'Dis Code' },
+                            { title: '', visible: false, searchable: false,},                            
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
+                            { title: '', visible: false, searchable: false,},
+                            { title: 'Program Year' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
+                            { title: '', visible: false, searchable: false,},
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LitPL</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Last Access" style="text-decoration:none">Last Access</a>' },	
+                        ],
+                        data: dataSet,			
+                        drawCallback: function () { 
+                            let tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                            let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {
+                                boundary: document.body,
+                                container: 'body',
+                                trigger: 'hover'
+                            })); 
+                            tooltipList.forEach((tooltip) => { $('.tooltip').hide(); });
+                            
+                            let popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+                            let popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
+                                boundary: document.body,
+                                container: 'body',
+                                placement: 'top',
+                                trigger: 'hover'
+                            })); 				  
+                            popoverList.forEach((popover) => { $('.popover').hide(); });	
+                            var tblName = $(this).attr('id');
+                            $("#"+tblName).LoadingOverlay("show", {
+                                //background: "#cae4fa",
+                                size: '75',
+                                maxSize: '75',
+                            });
+                            $("#"+tblName).LoadingOverlay("hide", true);
+                        },
+                        initComplete: function() {
+                            var tblName = $(this).attr('id');                    
+                        }
+                    });
+                }            
+                
             };
             reader.readAsText(file);  	
         };  
+        /* $(document).ready(function() {
+            var table = $('#reportTbl').DataTable();
+            var searchBuilder1 = new $.fn.dataTable.SearchBuilder(table, {
+                columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                preDefined: {
+                    criteria: [
+                        {
+                            condition: '!=',
+                            data: 'Dis Code',
+                            value: ['']
+                        },
+                        {
+                            condition: '!=',
+                            data: 'Dis Code',
+                            value: ['504']
+                        },
+                        {
+                            condition: '=',
+                            data: 'Grade',
+                            value: ['5']
+                        },                                        
+                    ],
+                    logic: 'AND'
+                },
+            });
+            //table.searchBuilder.container().addClass('sb_class');
+            //table.searchBuilder.container().addClass('sb_class');
+            $('#searchBuilderContainer1').append(searchBuilder1.container());
+                searchBuilder1.on('search', function(e, settings) {
+                table.search(searchBuilder1.getDetails()).draw();
+            });
+        }); */
         
+
         $(document).on('click','.dtsb-search',function(){
             //alert("You clicked the element with and ID of 'test-element'");
             $("#reportTbl").LoadingOverlay("show", {
