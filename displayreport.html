@@ -70,8 +70,8 @@
         }
 
         div.dataTables_wrapper div.dataTables_info {
-	    padding-top: .2em;
-	}
+			padding-top: .2em;
+		}
 
         div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
             background-color: #7088be;
@@ -85,7 +85,7 @@
             box-shadow: inset 0 0 0 9999px #7088be !important;
         }
 
-    	table.dataTable td {
+	    table.dataTable td {
             font-size: 14px;
         }
 
@@ -93,7 +93,7 @@
             font-size: 14px;
         }
 
-    	table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
+	    table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
             text-align: left;
         }
 	
@@ -131,23 +131,23 @@
             background-color: #ffc107;
         }
 
-	/* .page-link {
-	  color: #063970;
-	  background-color: #fff;
-	  border: 1px solid #dee2e6;
-	}
+		/* .page-link {
+		  color: #063970;
+		  background-color: #fff;
+		  border: 1px solid #dee2e6;
+		}
 
-	.page-link:hover {
-	  color: #fff !important;
-	  background-color: gray !important;
-	  border-color: #063970 !important;
-	}
+		.page-link:hover {
+		  color: #fff !important;
+		  background-color: gray !important;
+		  border-color: #063970 !important;
+		}
 
-	.paginate_button.active > .page-link {
-		background-color: gray !important;
-		border-color: gray;
-		color: white;
-	} */
+		.paginate_button.active > .page-link {
+			background-color: gray !important;
+			border-color: gray;
+			color: white;
+		} */
 
 	div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input {
 		padding: 0.4em;
@@ -289,6 +289,7 @@
         <div id="reportDiv" class="" style="padding:40px;margin: auto;display:none">
             <h5 id="reportTitle" class="center"></h5>
             <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover " style="width:100%"></table>
+            <table id="reportTbl1" class="table table-sm table-striped table-bordered table-hover " style="width:100%"></table>
         </div>
     </div>    	
 
@@ -320,6 +321,7 @@
                     element.classList.remove("show");
                     if (reportNameLine.includes('List of Students in Program')) {
                         document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
+                        var rprtTtle = document.getElementById("reportTitle").innerHTML;
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -361,6 +363,7 @@
                     } 
                     else if (reportNameLine.includes('List of Students To Take ACCESS')) {
                         document.getElementById("reportTitle").innerHTML = 'List of Students To Take ACCESS';
+                        var rprtTtle = document.getElementById("reportTitle").innerHTML;
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -390,7 +393,7 @@
                                 let resultNull = pattern.test(lines[line]);
                                 var withRoom = newStr+","+lines[line];
                                 var result = withRoom.match(pattern);
-                                console.log('Result ' + result);
+                                //console.log('Result ' + result);
                                 if(resultNull == true){
                                     console.log("resultNull "+resultNull);
                                 }
@@ -499,14 +502,14 @@
                                                 extend: 'pdfHtml5',
                                                 orientation: 'landscape',
                                                 pageSize : 'LEGAL',
-                                                title: 'List of Students in Program',
+                                                title: rprtTtle,
                                                 exportOptions: {
                                                     columns: ':visible'
                                                 }
                                             },
                                             {
                                                 extend: 'csv',
-                                                title: 'List of Students in Program',
+                                                title: rprtTtle,
                                                 exportOptions: {
                                                     columns: ':visible'
                                                 }
@@ -642,7 +645,7 @@
                         }
                     });
                 } else if (document.getElementById("reportTitle").innerHTML == 'List of Students To Take ACCESS') {
-                    $('#reportTbl').DataTable({
+                    $('#reportTbl1').DataTable({
                         destroy: true,
                         fixedHeader: true,                
                         fixedColumns: {
@@ -729,14 +732,14 @@
                                                 extend: 'pdfHtml5',
                                                 orientation: 'landscape',
                                                 pageSize : 'LEGAL',
-                                                title: 'List of Students in Program',
+                                                title: rprtTtle,
                                                 exportOptions: {
                                                     columns: ':visible'
                                                 }
                                             },
                                             {
                                                 extend: 'csv',
-                                                title: 'List of Students in Program',
+                                                title: rprtTtle,
                                                 exportOptions: {
                                                     columns: ':visible'
                                                 }
