@@ -326,6 +326,7 @@
                         document.getElementById("reportDiv").style.display = 'block';
                         document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
                         var rprtTtle = document.getElementById("reportTitle").innerHTML;
+		        document.getElementById("report1Div").style.display = 'none';
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -369,6 +370,7 @@
                         document.getElementById("report1Div").style.display = 'block';
                         document.getElementById("report1Title").innerHTML = 'List of Students To Take ACCESS';
                         var rprtTtle = document.getElementById("report1Title").innerHTML;
+		        document.getElementById("reportDiv").style.display = 'none';
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
