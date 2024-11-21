@@ -268,13 +268,29 @@
             box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
         }
 
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #6c757d;
+            /* background-color: var(#f3f5f7, #c8dadf);    */         
+            color: #fff;
+        }
+
 	</style>
 	
   </head>
   <body>
     <div class="container-fluid">
         <div class="center">Drag and Drop File</div>
-        <div class="center" style="border: dashed 3px grey;padding:5px;width:450px;">
+        <div class="center" style="border: dashed 3px grey;padding:5px;width:450px;background-color: #ededed;">
+            <label for="file" class="custom-file-upload">
+                <i class="fa fa-file"></i> Choose File
+            </label>
             <input type="file" accept=".csv" name="file" id="file" style="cursor: pointer;">
         </div>
         <div id='output' class="center">            
@@ -300,8 +316,7 @@
         const $output = document.getElementById('output')
         document.getElementById('file').onchange = function() {	
             sessionStorage.clear();
-            document.getElementById("output").style.display = 'none';
-            
+            document.getElementById("output").style.display = 'none';            
             var file = this.files[0];
             var items = [];
             var reader = new FileReader();
@@ -321,12 +336,21 @@
                     var reportNameLine = lines[1].split(',');
                     //console.log("Line 1 "+reportNameLine);
                     var element = document.getElementById("errorAlert");
-                    element.classList.remove("show");
+                    //element.classList.remove("show");
+                    if (element) {
+                        //element.classList.remove("show");
+                        element.classList.add("hide");
+                    }
                     if (reportNameLine.includes('List of Students in Program')) {
+                        var element = document.getElementById("errorAlert");
+                        if (element) {
+                            element.classList.add("hide");
+                            element.classList.remove("show");
+                        } 
                         document.getElementById("reportDiv").style.display = 'block';
                         document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
                         var rprtTtle = document.getElementById("reportTitle").innerHTML;
-		        document.getElementById("report1Div").style.display = 'none';
+                        document.getElementById("report1Div").style.display = 'none';
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -340,6 +364,7 @@
                                     document.getElementById("output").style.color = "red"; */
                                     var element = document.getElementById("errorAlert");
                                     element.classList.add("show");
+                                    //console.log('Line: 362');
                                     break;
                                 }
                             }
@@ -367,10 +392,15 @@
                         }
                     } 
                     else if (reportNameLine.includes('List of Students To Take ACCESS')) {
+                        var element = document.getElementById("errorAlert");
+                        if (element) {
+                            element.classList.add("hide");
+                            element.classList.remove("show");
+                        }                        
                         document.getElementById("report1Div").style.display = 'block';
                         document.getElementById("report1Title").innerHTML = 'List of Students To Take ACCESS';
                         var rprtTtle = document.getElementById("report1Title").innerHTML;
-		        document.getElementById("reportDiv").style.display = 'none';
+                        document.getElementById("reportDiv").style.display = 'none';
                         if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
                         && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
                             if(line <= 3){
@@ -386,6 +416,7 @@
                                     document.getElementById("output").style.color = "red"; */
                                     var element = document.getElementById("errorAlert");
                                     element.classList.add("show");
+                                    //console.log('Line: 408');
                                     break;
                                 }
                             }
@@ -416,6 +447,16 @@
                     {                                                
                         var element = document.getElementById("errorAlert");
                         element.classList.add("show");
+                        document.getElementById("spnHeadertxt").innerHTML = "";
+                        var table = $('#reportTbl').DataTable();
+                        // Clear the table
+                        table.clear().draw();
+                        var table = $('#reportTbl1').DataTable();
+                        // Clear the table
+                        table.clear().draw();
+                        document.getElementById("reportTitle").innerHTML = '';
+                        document.getElementById("report1Title").innerHTML = '';
+                        //console.log("Line: 458");
                         return;
                     }                    
                 }
@@ -651,7 +692,8 @@
                             var tblName = $(this).attr('id');                    
                         }
                     });
-                } else if (rprtTtle == 'List of Students To Take ACCESS') {
+                } 
+                else if (rprtTtle == 'List of Students To Take ACCESS') {
                     $('#reportTbl1').DataTable({
                         destroy: true,
                         fixedHeader: true,                
@@ -692,7 +734,7 @@
                                 searchBuilder: {
                                     
                                     //columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
-				    columns: ':visible'
+                                    columns: ':visible',
                                     /* preDefined: {
                                         criteria: [
                                             {
@@ -817,7 +859,7 @@
                         ],
                         columns: [
                             { title: 'Room' },
-			    { title: '', visible: false, searchable: false,},
+                            { title: '', visible: false, searchable: false,},
                             { title: 'State ID' },
                             { title: 'Student#' },
                             { title: 'Student Name',
@@ -918,6 +960,14 @@
             });
         }); */
         
+        const myAlert = document.getElementById('errorAlert')
+        myAlert.addEventListener('close.bs.alert', event => {
+            event.preventDefault();            
+            var element = document.getElementById("errorAlert");
+            element.classList.add("hide");
+            element.classList.remove("show");
+            document.getElementById("spnHeadertxt").innerHTML = "";
+        })
 
         $(document).on('click','.dtsb-search',function(){
             //alert("You clicked the element with and ID of 'test-element'");
