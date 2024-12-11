@@ -45,7 +45,9 @@
     <title>Display Report</title>
 	<style>
         p {color:blue;}
-		
+
+		.red {color:red;}
+
 		.center {
 		  margin: auto;
 		  width: 50%;
@@ -271,6 +273,7 @@
         input[type="file"] {
             display: none;
         }
+
         .custom-file-upload {
             border: 1px solid #ccc;
             display: inline-block;
@@ -281,18 +284,32 @@
             color: #fff;
         }
 
+        .modal-content {
+            background-color: #f8d7da;
+            color: #58151c;            
+        }
+
+        .modal-header {           
+            border-bottom: 2px solid #f1aeb5;
+        }
+
+
+        .modal-footer {
+            border-top: 0 none;
+        }
+
+
 	</style>
 	
   </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EQLTFVD89G"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-EQLTFVD89G');
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQLTFVD89G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-EQLTFVD89G');
+    </script>
   <body>
     <div class="container-fluid">
         <div class="center">Drag and Drop File</div>
@@ -302,15 +319,21 @@
             </label>
             <input type="file" accept=".csv" name="file" id="file" style="cursor: pointer;">
         </div>
-        <div id='output' class="center">            
+        <!-- <div id='output' class="center">            
             <a href="displayreport.html">Download File</a>
-        </div>
-        <br />
-        <p id="spnHeadertxt" class="center"></p> 
-        <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="margin: auto;width: 30%;">            
-            <strong>File not formatted properly</strong>
+        </div> -->
+        <br />        
+        <!-- <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="margin: auto;width: 35%;"> 
+            <div class="center"><strong><i class="fa fa-exclamation-circle"></i> File not formatted properly:</strong></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>           
+        </div>  --> 
+        <div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert" style="margin: auto;width: 40%;">    
+            <div class="center"><strong><i class="fa fa-info-circle"></i> Works with the following reports:</strong></div>
+            <div class="center"><small class="center ps-5">List of Students in Program</small></div>
+            <div class="center"><small class="center ps-5">List of Students To Take ACCESS</small></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div> 
+        <p id="spnHeadertxt" class="center"></p>                  
         <div id="reportDiv" class="" style="padding:40px;margin: auto;display:none">
             <h5 id="reportTitle" class="center"></h5>
             <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
@@ -319,13 +342,30 @@
             <h5 id="report1Title" class="center"></h5>
             <table id="reportTbl1" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
         </div>
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" id="waitDialog">
+                <div class="modal-content border border-danger">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel"><i class="fa fa-exclamation-circle"></i> File Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="center"><strong><i class="fa fa-exclamation-circle"></i> File not formatted properly</strong></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
     </div>    	
 
 	<script>	
-        const $output = document.getElementById('output')
+        //const $output = document.getElementById('output')
         document.getElementById('file').onchange = function() {	
             sessionStorage.clear();
-            document.getElementById("output").style.display = 'none';            
+            //document.getElementById("output").style.display = 'none';            
             var file = this.files[0];
             var items = [];
             var reader = new FileReader();
@@ -343,19 +383,9 @@
                 var lines = text.split('\n');	
                 for (var line = 0; line < lines.length; line++) {
                     var reportNameLine = lines[1].split(',');
-                    //console.log("Line 1 "+reportNameLine);
-                    var element = document.getElementById("errorAlert");
-                    //element.classList.remove("show");
-                    if (element) {
-                        //element.classList.remove("show");
-                        element.classList.add("hide");
-                    }
+                    //console.log("Line 1 "+reportNameLine);                    
                     if (reportNameLine.includes('List of Students in Program')) {
-                        var element = document.getElementById("errorAlert");
-                        if (element) {
-                            element.classList.add("hide");
-                            element.classList.remove("show");
-                        } 
+                       
                         document.getElementById("reportDiv").style.display = 'block';
                         document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
                         var rprtTtle = document.getElementById("reportTitle").innerHTML;
@@ -368,11 +398,9 @@
                                 //console.log('List of Students in Program '+partsOfStr);
                                 if(!partsOfStr.includes('Student #')){						
                                     console.log("EXIT NOT ACCPETAPLE FILE");
-                                    /* document.getElementById("output").style.display = 'block';
-                                    document.getElementById("output").innerHTML = 'File not formatted properly';
-                                    document.getElementById("output").style.color = "red"; */
-                                    var element = document.getElementById("errorAlert");
-                                    element.classList.add("show");
+                                    /* var element = document.getElementById("errorAlert");
+                                    element.classList.add("show"); */
+                                    modalError.show();
                                     //console.log('Line: 362');
                                     break;
                                 }
@@ -401,11 +429,6 @@
                         }
                     } 
                     else if (reportNameLine.includes('List of Students To Take ACCESS')) {
-                        var element = document.getElementById("errorAlert");
-                        if (element) {
-                            element.classList.add("hide");
-                            element.classList.remove("show");
-                        }                        
                         document.getElementById("report1Div").style.display = 'block';
                         document.getElementById("report1Title").innerHTML = 'List of Students To Take ACCESS';
                         var rprtTtle = document.getElementById("report1Title").innerHTML;
@@ -420,11 +443,9 @@
                                 console.log(partsOfStr); */
                                 if(!partsOfStr.includes('Student #')){						
                                     console.log("EXIT NOT ACCPETAPLE FILE");
-                                    /* document.getElementById("output").style.display = 'block';
-                                    document.getElementById("output").innerHTML = 'File not formatted properly';
-                                    document.getElementById("output").style.color = "red"; */
-                                    var element = document.getElementById("errorAlert");
-                                    element.classList.add("show");
+                                    /* var element = document.getElementById("errorAlert");
+                                    element.classList.add("show"); */
+                                    modalError.show();
                                     //console.log('Line: 408');
                                     break;
                                 }
@@ -452,10 +473,11 @@
                             }
                         }
                     }
-                    else
+                    else // Not compatible
                     {                                                
-                        var element = document.getElementById("errorAlert");
-                        element.classList.add("show");
+                        /* var element = document.getElementById("errorAlert");
+                        element.classList.add("show"); */
+                        modalError.show();
                         document.getElementById("spnHeadertxt").innerHTML = "";
                         var table = $('#reportTbl').DataTable();
                         // Clear the table
@@ -469,7 +491,7 @@
                         return;
                     }                    
                 }
-                var dataSet = items;
+                var dataSet = items;                
                 //Create Table
                 if (rprtTtle == 'List of Students in Program') {
                     $('#reportTbl').DataTable({
@@ -928,8 +950,21 @@
                             $("#"+tblName).LoadingOverlay("hide", true);
                         },
                         initComplete: function() {
-                            var tblName = $(this).attr('id');                    
-                        }
+                            var tblName = $(this).attr('id'); 
+                            /* var table = $("#"+tblName).DataTable();
+                            table.rows().each(function(index) {
+                                if (duplicates.includes(data[index])) {
+                                    $(this.node()).addClass('red'); // Add a class to highlight the row
+                                }
+                            }); */                          
+                        },
+                        /* rowCallback: function( row, data, index ) {
+                            var allData = this.api().column(3).data().toArray();
+                            console.log(allData);
+                            if (allData.indexOf(data[3]) != allData.lastIndexOf(data[3])) {
+                                $('td:eq(3)', row).css('background-color', 'Red');
+                            }
+                        } */
                     });
                 }            
                 
@@ -969,17 +1004,16 @@
             });
         }); */
         
-        const myAlert = document.getElementById('errorAlert')
+        /* const myAlert = document.getElementById('errorAlert')
         myAlert.addEventListener('close.bs.alert', event => {
             event.preventDefault();            
             var element = document.getElementById("errorAlert");
             element.classList.add("hide");
             element.classList.remove("show");
             document.getElementById("spnHeadertxt").innerHTML = "";
-        })
+        }) */
 
         $(document).on('click','.dtsb-search',function(){
-            //alert("You clicked the element with and ID of 'test-element'");
             $(".reportTbl").LoadingOverlay("show", {
                 //background: "#cae4fa",
                 size: '75',
@@ -987,6 +1021,9 @@
             });
             $(".reportTbl").LoadingOverlay("hide", true);
         });
+
+        var myModal = document.getElementById('staticBackdrop');
+        var modalError = bootstrap.Modal.getOrCreateInstance(myModal);
 	</script>
   </body>
 </html>
