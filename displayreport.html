@@ -46,6 +46,16 @@
 	<style>
         p {color:blue;}
 
+        .blue {
+            color:blue;
+            text-align: center;
+        }
+
+        a.blue:hover { 
+            color:blue;
+            
+        }
+
 		.red {color:red;}
 
 		.center {
@@ -293,12 +303,19 @@
             border-bottom: 2px solid #f1aeb5;
         }
 
-
         .modal-footer {
             border-top: 0 none;
         }
 
-
+        /* div.dt-button-collection .dt-button-active:after {
+            position: absolute;
+            top: 50%;
+            margin-top: -10px;
+            right: 1em;
+            display: inline-block;
+            content: "✓";            
+            color: inherit;
+        } */
 	</style>
 	
   </head>
@@ -327,8 +344,8 @@
             <div class="center"><strong><i class="fa fa-exclamation-circle"></i> File not formatted properly:</strong></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>  --> 
-        <div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert" style="margin: auto;width: 40%;">    
-            <div class="center"><strong><i class="fa fa-info-circle"></i> Works with the following reports:</strong></div>
+        <div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert" style="margin: auto;width: 45%;">    
+            <div class="center"><strong><i class="fa fa-info-circle"></i> The site works with the following reports:</strong></div>
             <div class="center"><small class="center ps-5">List of Students in Program</small></div>
             <div class="center"><small class="center ps-5">List of Students To Take ACCESS</small></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -531,9 +548,9 @@
                                     columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
                                     //liveSearch: false,                  
                                 } */
-                                searchBuilder: {
-                                    
-                                    columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                searchBuilder: {                                    
+                                    //columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                                    columns: ':visible',
                                     /* preDefined: {
                                         criteria: [
                                             {
@@ -646,52 +663,52 @@
                             }
                         },
                         columnDefs: [
-                            { 
+                            /* { 
                                 visible: false, targets: [2,4,7,11,12,14,17,18,22]                         
-                            },
-                            { 
+                            }, */
+                            /* { 
                                 searchable: false, targets: [2,4,7,11,12,14,17,18,22] 
-                            },
+                            }, */
                             /*{
                                 targets: '_all', className: 'dt-body-left'
                             },*/
                         ],
                         columns: [
-                            { title: 'Room' },
-                            { title: 'Student#' },
-                            { title: '' },
-                            { title: 'Student Name',
-                            render: function ( data, type, row, meta ) {
-                                if ( data === null ) {// Do some type checking
-                                    return "";
-                                }
-                                return data.replace(/"/g, "");
-                            }			
+                            { title: 'Room', className: 'colshow' },
+                            { title: 'Student#', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Student Name', className: 'colshow',
+                                render: function ( data, type, row, meta ) {
+                                    if ( data === null ) {// Do some type checking
+                                        return "";
+                                    }
+                                    return data.replace(/"/g, "");
+                                }			
                             },
-                            { title: '' },
-                            { title: 'Grade' },
-                            { title: 'Language' },
-                            { title: '' },
-                            { title: 'Program Model' },
-                            { title: 'Placement Model' },
-                            { title: 'Instructional Context' },
-                            { title: '' },
-                            { title: '' },
-                            { title: 'Assessment Accommodations' },
-                            { title: '' },
-                            { title: 'Periods per Week' },
-                            { title: 'Dis Code' },
-                            { title: '' },
-                            { title: '' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" style="text-decoration:none">PY</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
-                            { title: '' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },		
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Grade', className: 'colshow' },
+                            { title: 'Language', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Program Model', className: 'colshow' },
+                            { title: 'Placement Model', className: 'colshow' },
+                            { title: 'Instructional Context', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Assessment Accommodations', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Periods per Week', className: 'colshow' },
+                            { title: 'Dis Code', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: '', visible: false, searchable: false },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>', className: 'colshow' },				
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" style="text-decoration:none">PY</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LiPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>', className: 'colshow' },		
                         ],
                         data: dataSet,			
                         drawCallback: function () { 
@@ -720,7 +737,26 @@
                             $("#"+tblName).LoadingOverlay("hide", true);
                         },
                         initComplete: function() {
-                            var tblName = $(this).attr('id');                    
+                            var tblName = $(this).attr('id'); 
+                            var table = $("#"+tblName).DataTable();
+                            table.button().add('2-0', {
+                                text: 'Only Show Student',
+                                className: 'blue',
+                                action: function ( e, dt, node, config ) {
+                                    e.preventDefault();
+                                    if(table.button('2-0').text() == "Only Show Student"){
+                                        table.columns(':visible').visible(this.active());
+                                        this.active(!this.active());
+                                        table.columns([1,3]).visible(this.active());                                    
+                                        this.active(!this.active());
+                                        table.button('2-0').text('Show All');
+                                    }
+                                    else if(table.button('2-0').text() == "Show All"){
+                                        table.columns('.colshow').visible(true);
+                                        table.button('2-0').text('Only Show Student');
+                                    }                                    
+                                }
+                            });    
                         }
                     });
                 } 
@@ -889,11 +925,11 @@
                             },*/
                         ],
                         columns: [
-                            { title: 'Room' },
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'State ID' },
-                            { title: 'Student#' },
-                            { title: 'Student Name',
+                            { title: 'Room', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'State ID', className: 'colshow' },
+                            { title: 'Student#', className: 'colshow' },
+                            { title: 'Student Name', className: 'colshow',
                                 render: function ( data, type, row, meta ) {
                                     if ( data === null ) {// Do some type checking
                                         return "";
@@ -901,27 +937,27 @@
                                     return data.replace(/"/g, "");
                                 }			
                             },
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'Grade' },
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'Language' },
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'HLS' },
-                            { title: '', visible: false, searchable: false,},
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'Dis Code' },
-                            { title: '', visible: false, searchable: false,},                            
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>' },				
-                            { title: '', visible: false, searchable: false,},
-                            { title: 'Program Year' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>' },
-                            { title: '', visible: false, searchable: false,},
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LitPL</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>' },
-                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Last Access" style="text-decoration:none">Last Access</a>' },	
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Grade', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Language', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'HLS', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Dis Code', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },                            
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" style="text-decoration:none">Sped Model</a>', className: 'colshow' },				
+                            { title: '', visible: false, searchable: false },
+                            { title: 'Program Year', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" style="text-decoration:none">RPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" style="text-decoration:none">WPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" style="text-decoration:none">LPL</a>', className: 'colshow' },
+                            { title: '', visible: false, searchable: false },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" style="text-decoration:none">SPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" style="text-decoration:none">LitPL</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Access Compsite" style="text-decoration:none">Access Com</a>', className: 'colshow' },
+                            { title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Last Access" style="text-decoration:none">Last Access</a>', className: 'colshow' },	
                         ],
                         data: dataSet,			
                         drawCallback: function () { 
@@ -951,12 +987,25 @@
                         },
                         initComplete: function() {
                             var tblName = $(this).attr('id'); 
-                            /* var table = $("#"+tblName).DataTable();
-                            table.rows().each(function(index) {
-                                if (duplicates.includes(data[index])) {
-                                    $(this.node()).addClass('red'); // Add a class to highlight the row
+                            var table = $("#"+tblName).DataTable();
+                            table.button().add('2-0', {
+                                text: 'Only Show Student',
+                                className: 'blue',
+                                action: function ( e, dt, node, config ) {
+                                    e.preventDefault();
+                                    if(table.button('2-0').text() == "Only Show Student"){
+                                        table.columns(':visible').visible(this.active());
+                                        this.active(!this.active());
+                                        table.columns([3,4]).visible(this.active());                                    
+                                        this.active(!this.active());
+                                        table.button('2-0').text('Show All');
+                                    }
+                                    else if(table.button('2-0').text() == "Show All"){
+                                        table.columns('.colshow').visible(true);                                        
+                                        table.button('2-0').text('Only Show Student');
+                                    }                                    
                                 }
-                            }); */                          
+                            });
                         },
                         /* rowCallback: function( row, data, index ) {
                             var allData = this.api().column(3).data().toArray();
