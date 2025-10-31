@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicago Bears Next Game Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+			max-height: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            <!-- border-left: 5px solid #00143F; /* Bears Navy */ -->
+        }
+        h1 {
+            color: #C83803; /* Bears Orange */
+            margin-bottom: 20px;
+        }
+        .game-info {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: left;
+        }
+        .game-info p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .loading, .error {
+            font-style: italic;
+            color: #666;
+        }
+        /* New Styles for Logo and Team display */
+        .team-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .team-info {
+            flex: 1;
+            padding: 0 10px;
+        }
+        .team-info img {
+            width: 80px; /* Set a fixed size for the logo */
+            height: auto;
+            margin-bottom: 5px;
+        }
+        .opponent-name, .bears-name {
+            font-weight: bold;
+            color: #00143F;
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- <h1>Chicago Bears Next Game</h1> -->
+        <div id="game-container" class="game-info">
+            <p class="loading">Fetching game schedule...</p>
+        </div>
+    </div>
+
+    <script>
+        // API URL for the Chicago Bears (Team ID 3)
+        const API_URL = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/3';
+        const CONTAINER = document.getElementById('game-container');
+        const BEARS_ID = '3';
+
+        /**
+         * Safely retrieves the logo URL from the team's data object.
+         * The logo with the highest width is usually the best quality.
+         */
+        function getBestLogo(team) {
+            if (team.logo) {
+                return team.logo;
+            }
+            if (team.logos && team.logos.length > 0) {
+                // Find the logo with a width of 100 or 120 (a good size for display)
+                const preferredLogo = team.logos.find(l => l.width === 100 || l.width === 120);
+                if (preferredLogo) {
+                    return preferredLogo.href;
+                }
+                // Otherwise, just use the first logo
+                return team.logos[0].href;
+            }
+            return ''; // Return an empty string if no logo is found
+        }
+
+        async function fetchGameData() {
+            try {
+                // 1. Fetch data from the API
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Get Bears Data (needed for the logo)
+                const bears = data.team;
+                const bearsLogo = getBestLogo(bears);
+                const bearsName = bears.displayName;
+
+                // 2. Check if the next game event exists
+                const nextGame = data.team.nextEvent ? data.team.nextEvent[0] : null;
+
+                if (!nextGame) {
+                    CONTAINER.innerHTML = '<p class="error">No upcoming scheduled game found.</p>';
+                    return;
+                }
+
+                const competition = nextGame.competitions[0];
+                const competitors = competition.competitors;
+
+                // 3. Find the opponent
+                const opponentComp = competitors.find(comp => comp.team.id !== BEARS_ID);
+                
+                const opponentTeam = opponentComp ? opponentComp.team : null;
+                const opponentName = opponentTeam ? opponentTeam.displayName : 'TBD Opponent';
+                const opponentLogo = opponentTeam ? getBestLogo(opponentTeam) : '';
+                const homeAway = opponentComp ? (opponentComp.homeAway === 'home' ? 'vs' : '@') : '';
+
+                // 4. Format the date and time
+                const gameDate = new Date(nextGame.date);
+                const options = { 
+                    weekday: 'long', 
+                    //year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    timeZoneName: 'short' 
+                };
+                const formattedDate = gameDate.toLocaleTimeString('en-US', options);
+                const venue = competition.venue.fullName;
+				<!-- <div style="font-size: 2em; font-weight: bold; color: #333;">${homeAway}</div> -->
+                // 5. Build and inject the HTML with Logos
+                CONTAINER.innerHTML = `
+                    
+                    <div class="team-display">
+                        <div class="team-info">
+                            <img src="${bearsLogo}" height="180" alt="${bearsName} Logo">
+                            <p class="bears-name">${bearsName}</p>
+                        </div>
+                        
+                        <div style="font-size: 2em; font-weight: bold; color: #333;">@</div>
+
+                        <div class="team-info">
+                            ${opponentLogo ? `<img src="${opponentLogo}" height="180" alt="${opponentName} Logo">` : ''}
+                            <p class="opponent-name">${opponentName}</p>
+                        </div>
+                    </div>   
+                    <p style="text-align: center;"><strong>${formattedDate}</strong></p>
+                    <p style="text-align: center;"><strong>at ${venue}</strong></p>
+                `;
+
+            } catch (error) {
+                // 6. Handle any errors during the fetch or parsing
+                console.error("Failed to fetch game data:", error);
+                CONTAINER.innerHTML = `
+                    <p class="error">Error loading data. Please check the console for details.</p>
+                `;
+            }
+        }
+
+        // Run the function when the page loads
+        document.addEventListener('DOMContentLoaded', fetchGameData);
+    </script>
+</body>
+</html>
