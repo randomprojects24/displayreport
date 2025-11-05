@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            <!-- margin: 20px; -->
             background-color: #f4f4f9;
             color: #333;
             text-align: center;
@@ -63,7 +63,13 @@
             color: #00143F;
             font-size: 1.2em;
             margin-top: 0;
-        }
+        }		
+		.bottomTitle{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 30px;
+		}
     </style>
 </head>
 <body>
@@ -100,6 +106,16 @@
             }
             return ''; // Return an empty string if no logo is found
         }
+		
+		function getSecondaryLogo(team) {
+			if (!team.logos || team.logos.length === 0) return "";
+			// Try to find a logo where "rel" contains "secondary_logo_on_white_color"
+			const secondary = team.logos.find(l => l.rel && l.rel.includes("secondary_logo_on_white_color"));
+			if (secondary) return secondary.href;			
+			// Fallback: use the second logo if available
+			if (team.logos.length > 1) return team.logos[1].href;
+			return team.logos[0].href; // final fallback
+		}
 
         async function fetchGameData() {
             try {
@@ -113,6 +129,7 @@
                 // Get Bears Data (needed for the logo)
                 const bears = data.team;
                 const bearsLogo = getBestLogo(bears);
+				const bearsSecondaryLogo = getSecondaryLogo(bears);
                 const bearsName = bears.displayName;
 
                 // 2. Check if the next game event exists
@@ -125,6 +142,7 @@
 
                 const competition = nextGame.competitions[0];
                 const competitors = competition.competitors;
+				const broadcasts = competition.broadcasts[0];
 
                 // 3. Find the opponent
                 const opponentComp = competitors.find(comp => comp.team.id !== BEARS_ID);
@@ -133,7 +151,7 @@
                 const opponentName = opponentTeam ? opponentTeam.displayName : 'TBD Opponent';
                 const opponentLogo = opponentTeam ? getBestLogo(opponentTeam) : '';
                 const homeAway = opponentComp ? (opponentComp.homeAway === 'home' ? 'vs' : '@') : '';
-
+				
                 // 4. Format the date and time
                 const gameDate = new Date(nextGame.date);
                 const options = { 
@@ -147,27 +165,52 @@
                 };
                 const formattedDate = gameDate.toLocaleTimeString('en-US', options);
                 const venue = competition.venue.fullName;
-				<!-- <div style="font-size: 2em; font-weight: bold; color: #333;">${homeAway}</div> -->
-                // 5. Build and inject the HTML with Logos
-                CONTAINER.innerHTML = `
-                    
-                    <div class="team-display">
-                        <div class="team-info">
-                            <img src="${bearsLogo}" alt="${bearsName} Logo">
-                            <p class="bears-name" style="font-size: 2em; font-weight: bold; color: #333;">${bearsName}</p>
-                        </div>
-                        
-                        <div style="font-size: 5em; font-weight: bold; color: #333;">@</div>
+				const venueCity = competition.venue.address.city
+				const broadcast = broadcasts.media.shortName;				
+				const bearsTeamData = competitors.find(team => team.id === "3");
 
-                        <div class="team-info">
-                            ${opponentLogo ? `<img src="${opponentLogo}" alt="${opponentName} Logo">` : ''}
-                            <p class="opponent-name" style="font-size: 2em; font-weight: bold; color: #333;">${opponentName}</p>
-                        </div>
-                    </div>   
-                    <p style="font-size: 2em; font-weight: bold; color: #333;text-align: center;"><strong>${formattedDate}</strong></p>
-                    <p style="font-size: 1em; font-weight: bold; color: #333;text-align: center;"><strong>at ${venue}</strong></p>
-                `;
+				// Check the 'homeAway' property
+				if (bearsTeamData.homeAway === "home") {
+					isBearsHome = true;
+				} else {
+					isBearsHome = false;
+				}				
+				
+				// 1. Define the HTML for each team block separately
+				const bearsBlock = `
+					<div class="team-info">
+						<img src="${bearsLogo}" alt="${bearsName} Logo">
+						<p class="bears-name" style="font-size: 2em; font-weight: bold; color: #333;">${bearsName}</p>
+					</div>
+				`;
 
+				const opponentBlock = `
+					<div class="team-info">
+						${opponentLogo ? `<img src="${opponentLogo}" alt="${opponentName} Logo">` : ''}
+						<p class="opponent-name" style="font-size: 2em; font-weight: bold; color: #333;">${opponentName}</p>
+					</div>
+				`;
+
+				// 2. Use the 'isBearsHome' variable to determine the order
+				const awayTeamBlock = isBearsHome ? bearsBlock : opponentBlock;
+				const homeTeamBlock = isBearsHome ? opponentBlock : bearsBlock;
+				
+				// 3. Set the main HTML. The variables will slot into the correct place.
+				CONTAINER.innerHTML = `
+					<div class="team-display">						
+						${homeTeamBlock}
+						<div style="font-size: 5em; font-weight: bold; color: #333;">@</div>						
+						${awayTeamBlock}
+					</div>
+					<p style="font-size: 2em; font-weight: bold; color: #333;text-align: center;"><strong>${formattedDate}</strong></p>
+					<p style="font-size: 1.3em; font-weight: bold; color: #333;text-align: center;"><strong>at ${venue}, ${venueCity}</strong></p>
+					<div style="background-color: #d3d3d3;">						
+						<span class="bottomTitle">	
+							<img class="image" src="https://static.www.nfl.com/image/upload/v1554321393/league/nvfr7ogywskqrfaiu38m.svg" alt="NFL" style="height:30px;"/>
+							Next Chicago Bears <img class="image" src="${bearsSecondaryLogo}" alt="Bears Secondary Logo" style="height:28px; margin-right:8px;"/> Game on ${broadcast}							
+						</span>					
+					</div>
+				`;				
             } catch (error) {
                 // 6. Handle any errors during the fetch or parsing
                 console.error("Failed to fetch game data:", error);
