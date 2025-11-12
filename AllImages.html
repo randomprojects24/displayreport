@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Team Images</title>
+  <style>
+    img { width: 150px; margin: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+<h2>NFL Team Images</h2>
+<div id="images"></div>
+
+<script>
+async function fetchImages() {
+  const response = await fetch("https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/3");
+  const data = await response.json();
+
+  const imageContainer = document.getElementById("images");
+  const imageUrls = new Set();
+
+  function findImages(obj) {
+    if (!obj) return;
+
+    if (typeof obj === "string" && obj.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
+      imageUrls.add(obj);
+    }
+
+    if (typeof obj === "object") {
+      for (const key in obj) {
+        findImages(obj[key]);
+      }
+    }
+  }
+
+  findImages(data);
+
+  imageUrls.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    imageContainer.appendChild(img);
+  });
+}
+
+fetchImages();
+</script>
+</body>
+</html>
