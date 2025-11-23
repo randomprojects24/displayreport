@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicago Bears Next Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f4f4f9; margin:0; padding:20px; text-align:center; }
+        .container { max-width:800px; margin:auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,.1); }
+        .team-display { display:flex; justify-content:space-around; align-items:center; }
+        .team-info img { width:260px; }
+        .team-info p { margin:4px 0; }
+        .bottomTitle { display:flex; justify-content:center; align-items:center; height:30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="game-container">
+        <p>Loading game data…</p>
+    </div>
+</div>
+
+<script>
+const BEARS_ID = "3";
+const API_TEAM = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/3";
+const API_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+const BOX = document.getElementById("game-container");
+
+const getLogo = t => t?.logos?.[0]?.href || "";
+const getSecondary = t => {
+    if (!t?.logos) return "";
+    const sec = t.logos.find(x => x.rel?.includes("secondary_logo_on_white_color"));
+    return sec?.href || t.logos[1]?.href || t.logos[0]?.href || "";
+};
+
+async function load() {
+    // Fetch team + scoreboard **in parallel**
+    const [teamRes, scoreRes] = await Promise.all([
+        fetch(API_TEAM).then(r => r.json()),
+        fetch(API_SCOREBOARD).then(r => r.json())
+    ]);
+
+    const team = teamRes.team;
+    const next = team.nextEvent?.[0];
+    if (!next) { BOX.innerHTML = "<p>No upcoming game.</p>"; return; }
+
+    const comp = next.competitions[0];
+    const bears = comp.competitors.find(c => c.team.id === BEARS_ID);
+    const opp = comp.competitors.find(c => c.team.id !== BEARS_ID);
+
+    const bearsLogo = getLogo(bears.team);
+    const oppLogo = getLogo(opp.team);
+    const bearsName = bears.team.displayName;
+    const oppName = opp.team.displayName;
+
+    const bearsRecord = bears.records?.[0]?.summary || "";
+    const oppRecord = opp.records?.[0]?.summary || "";
+
+    const secLogo = getSecondary(team);
+
+    const dateObj = new Date(next.date);
+    const formattedDate = dateObj.toLocaleString("en-US", {
+        weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit"
+    });
+
+    const gameStarted = new Date() >= dateObj;
+
+    // Render instantly
+    BOX.innerHTML = `
+        <div class="team-display">
+            <div class="team-info">
+                <img src="${bears.homeAway === "home" ? oppLogo : bearsLogo}">
+                <p style="font-size:2em;font-weight:bold;">
+                    ${bears.homeAway === "home" ? oppName : bearsName}
+                </p>
+                <p style="color:#666;">
+                    ${bears.homeAway === "home" ? oppRecord : bearsRecord}
+                </p>
+            </div>
+
+            <div style="font-size:5em;font-weight:bold;">@</div>
+
+            <div class="team-info">
+                <img src="${bears.homeAway === "home" ? bearsLogo : oppLogo}">
+                <p style="font-size:2em;font-weight:bold;">
+                    ${bears.homeAway === "home" ? bearsName : oppName}
+                </p>
+                <p style="color:#666;">
+                    ${bears.homeAway === "home" ? bearsRecord : oppRecord}
+                </p>
+            </div>
+        </div>
+
+        ${gameStarted
+            ? `<div id="live-score" style="font-size:2em;font-weight:bold;">Loading score…</div>`
+            : `<p style="font-size:2em;font-weight:bold;">${formattedDate}</p>`
+        }
+
+        <div style="background:#d3d3d3;">
+            <span class="bottomTitle">
+                <img src="https://static.www.nfl.com/image/upload/v1554321393/league/nvfr7ogywskqrfaiu38m.svg" height="30">
+                Next Chicago Bears <img src="${secLogo}" height="28" style="margin:0 5px;"> Game
+            </span>
+        </div>
+    `;
+
+    // If game started → extract live score from scoreboard (no extra API call)
+    if (gameStarted) {
+        const live = scoreRes.events.find(e => e.id === next.id);
+        if (live) {
+            const c = live.competitions[0].competitors;
+            const b = c.find(t => t.team.id === BEARS_ID);
+            const o = c.find(t => t.team.id !== BEARS_ID);
+
+            const color =
+                b.score > o.score ? "green" :
+                b.score < o.score ? "red" : "orange";
+
+            document.getElementById("live-score").innerHTML = `
+                <span style="color:${color};">
+                    Chicago Bears ${b.score} – ${o.score}
+                </span>
+                <div style="font-size:.7em;color:#555;">
+                    ${live.competitions[0].status.type.shortDetail}
+                </div>
+            `;
+        }
+    }
+}
+
+load();
+</script>
+
+</body>
+</html>
