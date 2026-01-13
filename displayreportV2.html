@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.bootstrap5.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/colreorder/2.0.1/css/colReorder.bootstrap5.css" rel="stylesheet" type="text/css" />
+
+    <link href="https://cdn.datatables.net/fixedcolumns/5.0.1/css/fixedColumns.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/select/2.0.5/css/select.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://cdn.datatables.net/searchbuilder/1.8.0/css/searchBuilder.bootstrap5.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.datatables.net/datetime/1.5.3/css/dataTables.dateTime.min.css" rel="stylesheet">
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>		
+	<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+	
+	<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+	<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.bootstrap5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
+	<script src="https://cdn.datatables.net/colreorder/2.0.1/js/dataTables.colReorder.js"></script>
+	<script src="https://cdn.datatables.net/colreorder/2.0.1/js/colReorder.bootstrap5.js"></script>
+
+    <script src="https://cdn.datatables.net/fixedcolumns/5.0.1/js/dataTables.fixedColumns.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedheader/4.0.1/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/select/2.0.5/js/dataTables.select.min.js"></script>
+
+    <script src="https://cdn.datatables.net/searchbuilder/1.8.0/js/dataTables.searchBuilder.js"></script>
+	<script src="https://cdn.datatables.net/searchbuilder/1.8.0/js/searchBuilder.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.3/js/dataTables.dateTime.min.js"></script>        
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+
+    
+    <meta charset=utf-8 />
+    <title>Display Report</title>
+	<style>
+        p {color:blue;}
+
+        .blue {
+            color:blue;
+            text-align: center;
+        }
+
+        a.blue:hover { 
+            color:blue;            
+        }
+
+		.red {color:red;}
+
+		.center {
+		  margin: auto;
+		  width: 50%;
+		  text-align: center;
+		}
+
+        /*Table Paging Color*/
+        .pagination .page-item.active .page-link {
+            background-color: #7088be;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
+            background-color: #7088be;
+        }
+
+        .pagination .page-item.active .page-link:hover {
+            background-color: #7088be;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            font-size: smaller;
+        }
+
+        div.dataTables_wrapper div.dataTables_info {
+			padding-top: .2em;
+		}
+
+        div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-item.active .page-link:focus {
+            background-color: #7088be;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            font-size: smaller;
+        }
+		
+        table.dataTable tbody tr.selected>* {
+            box-shadow: inset 0 0 0 9999px #7088be !important;
+        }
+
+	    table.dataTable td {
+            font-size: 14px;
+        }
+
+        table.dataTable th {
+            font-size: 14px;
+        }
+
+	    table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
+            text-align: left;
+        }
+	
+        .page-item .page-link {
+            color: #7088be;
+            box-shadow: none;
+        }
+
+        .page-item.active .page-link {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            box-shadow: none;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #7088be;
+            border-color: #828a91;        
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
+        }
+		
+        .backgroundwarning {
+            background-color: #ffc107;
+        }
+
+        .backgroundwhite {
+            background-color: white;
+        }
+
+        .backgroundwarning:hover {
+            background-color: #ffc107;
+        }
+
+        .backgroundwarning:focus {
+            background-color: #ffc107;
+        }
+
+		/* .page-link {
+		  color: #063970;
+		  background-color: #fff;
+		  border: 1px solid #dee2e6;
+		}
+
+		.page-link:hover {
+		  color: #fff !important;
+		  background-color: gray !important;
+		  border-color: #063970 !important;
+		}
+
+		.paginate_button.active > .page-link {
+			background-color: gray !important;
+			border-color: gray;
+			color: white;
+		} */
+
+	div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria select.dtsb-dropDown, div.dtsb-searchBuilder div.dtsb-group div.dtsb-criteria input.dtsb-input {
+		padding: 0.4em;
+		margin-right: 0.8em;
+		min-width: 5em;
+		max-width: 20em;
+		color: inherit;
+		font-size: .85rem;
+        }
+       
+        div.dtsb-searchBuilder button.dtsb-button, div.dtsb-searchBuilder select {
+		--bs-btn-padding-y: .25rem; 
+		--bs-btn-padding-x: .5rem; 
+		--bs-btn-font-size: .85rem;
+		font-size: .85rem;
+        }
+		
+	.btn-small {
+		--bs-btn-padding-y: .25rem; 
+		--bs-btn-padding-x: .5rem; 
+		--bs-btn-font-size: .85rem;
+	}
+	
+	.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn.dropdown-toggle-split:first-child, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+		border-top-right-radius: inherit;
+		border-bottom-right-radius: inherit;
+	}
+		
+		/* .dropdown-menu {
+            --bs-dropdown-min-width: 5rem !important;	
+		} */
+		
+	.dropdown-item.active, .dropdown-item:active {
+		background-color: #a3a0a0;
+		color: white;
+	}
+
+	.custom-popover {
+		--bs-popover-max-width: 200px;
+		/* --bs-popover-border-color: var(--bs-primary);
+		--bs-popover-header-bg: var(--bs-primary);
+		--bs-popover-header-color: var(--bs-white); */
+		--bs-popover-body-padding-x: 1rem;
+		--bs-popover-body-padding-y: .5rem;
+		--bs-popover-font-size: .75rem;
+        }
+
+	@media (min-width: 768px) {
+        .col-md {
+            flex: none;
+            width: auto;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .justify-content-md-center {
+            justify-content: left !important;
+        }
+    }
+
+        /* div.dt-buttons div.dropdown-menu {
+            
+            width: 15px !important;
+        } */
+
+        /* .dropdown-item.active, .dropdown-item:active:after {
+			background-color: #31a05f;
+			color: white;
+		} */
+
+		/* .btn-custom {
+			color:red;
+			background-color: green;
+		}		
+				
+		.dropdown-item:active{
+			background-color: red !important;
+		}
+		
+		div.dt-button-collection .dt-button-active:after {
+			position: absolute;
+			top: 50%;
+			margin-top: -10px;
+			right: 1em;
+			display: inline-block;
+			content: "✓";
+			color: inherit;
+		} */
+
+        /*scrolling inside dropdown*/
+        div.dt-button-collection { 
+            max-height:300px;
+            overflow-y:auto !important;
+        } 
+
+        .form-control:focus {
+            border-color: #828a91;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
+        }
+
+        .form-check-input:checked {
+            background-color: #465880 !important;
+            border-color: #828a91 !important;
+        }
+
+        .form-check-input:focus {
+            /*border-color: #828a91;*/
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
+        }
+
+        .form-control:focus {
+            border-color: #828a91;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
+        }
+
+        .form-select:focus {
+            border-color: #828a91;
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px #828a91;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #6c757d;
+            /* background-color: var(#f3f5f7, #c8dadf);    */         
+            color: #fff;
+        }
+
+        .modal-content .modal-error {
+            background-color: #f8d7da;
+            color: #58151c;            
+        }
+
+        .modal-header .modal-error {           
+            border-bottom: 2px solid #f1aeb5;
+        }
+
+        .modal-footer .modal-error {
+            border-top: 0 none;
+        }
+
+        /* div.dt-button-collection .dt-button-active:after {
+            position: absolute;
+            top: 50%;
+            margin-top: -10px;
+            right: 1em;
+            display: inline-block;
+            content: "✓";            
+            color: inherit;
+        } */
+	</style>
+	
+  </head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQLTFVD89G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-EQLTFVD89G');
+    </script>
+  <body>
+    <div class="container-fluid">
+        <div class="center">Drag and Drop File</div>
+        <div class="center" style="border: dashed 3px grey;padding:5px;width:450px;background-color: #ededed;">
+            <label for="file" class="custom-file-upload">
+                <i class="fa fa-file"></i> Choose File
+            </label>
+            <input type="file" accept=".csv" name="file" id="file" style="cursor: pointer;">
+        </div>
+        <!-- <div id='output' class="center">            
+            <a href="displayreport.html">Download File</a>
+        </div> -->
+        <br />        
+        <!-- <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="margin: auto;width: 35%;"> 
+            <div class="center"><strong><i class="fa fa-exclamation-circle"></i> File not formatted properly:</strong></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>  --> 
+        <div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert" style="margin: auto;width: 45%;">    
+            <div class="center"><strong><i class="fa fa-info-circle"></i> The site works with the following reports:</strong></div>
+            <div class="center"><small class="center ps-5">List of Students in Program</small></div>
+            <div class="center"><small class="center ps-5">List of Students To Take ACCESS</small></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div> 
+        <p id="spnHeadertxt" class="center"></p>                  
+       <!--  <div id="reportDiv" class="" style="padding:40px;margin: auto;display:none">
+            <h5 id="reportTitle" class="center"></h5>
+            <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
+        </div>
+        <div id="report1Div" class="" style="padding:40px;margin: auto;display:none">
+            <h5 id="report1Title" class="center"></h5>
+            <table id="reportTbl1" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
+        </div> -->
+        <div style="padding:40px;margin: auto;display:block">
+            <h5 id="reportTitle" class="center"></h5>
+            <table id="reportTbl" class="table table-sm table-striped table-bordered table-hover reportTbl" style="width:100%"></table>
+        </div>
+
+        <!-- <div id="pdfOptions" class="d-none">
+            <div id="q1">What will you do to demonstrate your English proficiency during each section of the test?\n¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?</div>
+            <div id="line1">Listening</div>
+        </div> -->
+        
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidd en="true">
+            <div class="modal-dialog modal-dialog-centered" id="waitDialog">
+                <div class="modal-content border border-danger modal-error">
+                    <div class="modal-header modal-error">
+                        <h5 class="modal-title" id="staticBackdropLabel"><i class="fa fa-exclamation-circle"></i> File Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="center"><strong><i class="fa fa-exclamation-circle"></i> File not formatted properly</strong></div>
+                    </div>
+                    <div class="modal-footer modal-error">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="myToastCustom" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                Hello, world! This is a toast message.
+                <div class="mt-2 pt-2 border-top">
+                    <button type="button" class="btn btn-primary btn-sm">Take action</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="container mt-5 d-none">
+            <h2>Bootstrap 5 Toast Example</h2>
+            <button id="showToastBtn" class="btn btn-primary">Show Toast</button>
+            <button id="showToastCustomBtn" class="btn btn-primary">Show Toast</button>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container">
+            <div id="myToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Hello! This is a Bootstrap 5 toast message.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="toast-container position-fixed top-50 start-50 translate-middle">
+            <div id="centerToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <div class="toast-header">
+                    <strong class="me-auto">Centered Toast</strong>
+                    <small>Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    This toast is centered on the screen.
+                </div>
+            </div>
+        </div> -->
+        <div class="toast-container position-fixed top-50 start-50 translate-middle">
+        <div id="centerToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="toast-header">
+            <strong class="me-auto">Centered Toast</strong>
+            <small>Just now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            This toast is centered on the screen.
+            </div>
+        </div>
+        </div>
+
+        <div class="toast-container position-fixed top-50 start-50 translate-middle">
+        <div id="centerToast2" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="toast-header">
+            <strong class="me-auto">Centered Toast</strong>
+            <small>Just now</small>            
+            </div>           
+            <div class="toast-body">
+                Hello, world! This is a toast message.
+                <div class="mt-2 pt-2 border-top">
+                    <button type="button" class="btn btn-primary btn-sm">Take action</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        </div>        
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Form Sections</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="textareaQuestion" class="form-label">Question</label>
+                    <textarea class="form-control" id="textareaQuestion" rows="2" style="resize: none;" maxlength="175" placeholder="Start Typin..."></textarea>    
+                </div>
+                <div class="mb-3">
+                    <label for="textareaSection1" class="form-label">Section 1</label>                    
+                    <textarea class="form-control" id="textareaSection1" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="textareaSection2" class="form-label">Section 2</label>
+                    <textarea class="form-control" id="textareaSection2" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="textareaSection3" class="form-label">Section 3</label>
+                    <textarea class="form-control" id="textareaSection3" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="textareaSection4" class="form-label">Section 4</label>
+                    <textarea class="form-control" id="textareaSection4" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="textareaSection5" class="form-label">Section 5</label>
+                    <textarea class="form-control" id="textareaSection5" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div>
+                <!--<div class="mb-3 sec5">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label for="textareaSection5" class="form-label mb-0">Section 5</label>                        
+                        <div class="form-check form-switch">
+                            <label for="switchToggle" class="form-label mb-0">Show</label>
+                            <input class="form-check-input" type="checkbox" role="switch" id="switchToggle">
+                        </div>
+                    </div>
+                    <textarea class="form-control" id="textareaSection5" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
+                </div> 
+            </div>-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-small" data-bs-dismiss="modal">Close</button>
+                <button id="mdSave" type="button" class="btn btn-secondary btn-small">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+    </div>    	
+
+	<script>	
+        /* document.getElementById('switchToggle').addEventListener('click', function () {
+            alert("sdsdsa");
+
+        }); 
+
+        document.getElementById('switchToggle').addEventListener('change', function() {
+            // 3. Check the 'checked' property to see if it's switched (on/off)
+            if (this.checked) {
+                // Code to run if the switch is ON
+                console.log('Switch is ON');
+                //statusText.textContent = 'On';
+                
+            } else {
+                // Code to run if the switch is OFF
+                console.log('Switch is OFF');
+                
+                //statusText.textContent = 'Off';
+            }
+        });*/
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            /* const toastLiveExample = document.getElementById('centerToast');
+            const toast = new bootstrap.Toast(toastLiveExample);
+
+            // Call the show method when you want the toast to appear
+            toast.show(); */           
+
+           /*  // Get a reference to the modal DOM element
+            const myModalEl = document.getElementById('exampleModal');
+
+            // Create a new modal instance
+            const myModal = new bootstrap.Modal(myModalEl);
+
+            // Show the modal
+            myModal.show(); */
+
+            
+        });
+
+        document.getElementById('mdSave').addEventListener('click', function () {
+            //const q1Modal = document.getElementById('textareaQuestion').value;
+            //document.getElementById('q1').innerText = q1Modal;
+            //const q1Modal = document.getElementById('q1').innerText;
+            //document.getElementById('textareaQuestion').value = q1Modal;
+            /* // Get a reference to the modal DOM element
+            const myModalEl = document.getElementById('exampleModal');
+
+            // Create a new modal instance
+            const myModal = new bootstrap.Modal(myModalEl);
+
+            // Show the modal
+            myModal.hide(); */
+
+            const q1Modal = document.getElementById('textareaQuestion').value;
+            const s1Modal = document.getElementById('textareaSection1').value;
+            const s2Modal = document.getElementById('textareaSection2').value;
+            const s3Modal = document.getElementById('textareaSection3').value;
+            const s4Modal = document.getElementById('textareaSection4').value;
+            const s5Modal = document.getElementById('textareaSection5').value;
+
+            const userSections = {
+                sectionQ1: q1Modal,
+                sectionOne: s1Modal,
+                sectionTwo: s2Modal,
+                sectionThree: s3Modal,
+                sectionFour: s4Modal,
+                sectionFive: s5Modal
+            };
+            // 1. Store the object (convert to a JSON string first)
+            localStorage.setItem('sections', JSON.stringify(userSections));
+            /* // Get a reference to the modal DOM element
+            const myModalEl = document.getElementById('exampleModal');
+            // Create a new modal instance
+            const myModal = new bootstrap.Modal(myModalEl);
+            // Show the modal
+            myModal.hide(); */
+
+            const modalElement = document.querySelector('#exampleModal');
+            // Get the existing modal instance
+            const modalInstance = bootstrap.Modal.getInstance(modalElement); 
+            
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+
+        document.getElementById('showToastBtn').addEventListener('click', function () {
+            // Get the toast element
+            var toastEl = document.getElementById('myToast');
+            // Create a Bootstrap toast instance
+            var toast = new bootstrap.Toast(toastEl, {
+            delay: 3000 // Auto-hide after 3 seconds
+            });
+            // Show the toast
+            toast.show();
+        });
+
+        document.getElementById('showToastCustomBtn').addEventListener('click', function () {
+            /* // Get the toast element
+            var toastEl = document.getElementById('centerToast2');
+            // Create a Bootstrap toast instance
+            var toast = new bootstrap.Toast(toastEl, {
+            delay: 3000 // Auto-hide after 3 seconds
+            });
+            // Show the toast
+            toast.show(); */
+
+            /* const q1Modal = document.getElementById('q1').innerText;
+            document.getElementById('textareaQuestion').value = q1Modal;
+
+            const line1Modal = document.getElementById('line1').innerText;
+            document.getElementById('textareaSection1').value = line1Modal; */
+            /* localStorage.removeItem('sections');
+            return; */
+            const keyName1 = 'sections';
+
+            if (!localStorage.getItem(keyName1)) {
+                // The item does not exist
+                console.log(`The item "${keyName1}" does not exist.`);
+                // Define an object
+                /* const userSections = {     
+                sectionQ1: 'What will you do to demonstrate your English proficiency during each section of the test?¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?',
+                sectionOne: 'Listening',
+                sectionTwo: 'Reading',
+                sectionThree: 'Writing',
+                sectionFour: 'Speaking',
+                sectionFive: 'Speaking'
+                };
+                // 1. Store the object (convert to a JSON string first)
+                localStorage.setItem('sections', JSON.stringify(userSections)); */
+                getSetItems();
+                getSetSections();
+            } else {
+                // The item exists
+                console.log(`The item "${keyName1}" exists.`);
+                // 2. Retrieve the object (parse the JSON string back into a JavaScript object)
+                getSetSections();
+                /* const storedSections = JSON.parse(localStorage.getItem('sections'));
+                // Now you can access properties
+                console.log(storedSections.sectionOne); // Outputs: Long.....
+                console.log(storedSections.sectionTwo); // Outputs: Listening
+                console.log(storedSections.sectionThree); // Outputs: Speaking   */          
+            }      
+            //alert(q1Modal);
+            // Get a reference to the modal DOM element
+            const myModalEl = document.getElementById('exampleModal');
+
+            // Create a new modal instance
+            const myModal = new bootstrap.Modal(myModalEl);
+
+            // Show the modal
+            myModal.show();            
+        });
+
+        function getSetItems() {
+            const userSections = {     
+                sectionQ1: 'What will you do to demonstrate your English proficiency during each section of the test?¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?',
+                sectionOne: 'Listening:',
+                sectionTwo: 'Reading:',
+                sectionThree: 'Writing:',
+                sectionFour: 'Speaking:',
+                sectionFive: 'Test:'
+            };
+                // 1. Store the object (convert to a JSON string first)
+            localStorage.setItem('sections', JSON.stringify(userSections));
+        }
+
+        function getSetSections() {
+            const storedSections = JSON.parse(localStorage.getItem('sections'));
+            // Now you can access properties                 
+            document.getElementById('textareaQuestion').value = storedSections.sectionQ1;
+            document.getElementById('textareaSection1').value = storedSections.sectionOne;
+            document.getElementById('textareaSection2').value = storedSections.sectionTwo;  
+            document.getElementById('textareaSection3').value = storedSections.sectionThree;  
+            document.getElementById('textareaSection4').value = storedSections.sectionFour;  
+            document.getElementById('textareaSection5').value = storedSections.sectionFive;    
+        } 
+
+        //const $output = document.getElementById('output')
+        document.getElementById('file').onchange = function() {	             
+            //document.getElementById("output").style.display = 'none';            
+            var file = this.files[0];
+            var items = [];
+            //var itemsTest = [];
+            const multiArr = [];
+            var reader = new FileReader();
+            const name = this.files[0].name;
+            const lastDot = name.lastIndexOf('.');
+            const fileName = name.substring(0, lastDot);
+            const ext = name.substring(lastDot + 1);
+            document.getElementById("spnHeadertxt").innerHTML = fileName;
+            reader.onload = function(progressEvent) {
+                // Entire file
+                const text = this.result;
+                //$output.innerText = text
+                var columnItems = [];              
+
+                // By lines
+                var lines = text.split('\n');	
+                for (var line = 0; line < lines.length; line++) {
+                    var reportNameLine = lines[1].split(',');
+                    //console.log("Line 1 "+reportNameLine);                    
+                    if (reportNameLine.includes('List of Students in Program')) {                       
+                        //document.getElementById("reportDiv").style.display = 'block';
+                        document.getElementById("reportTitle").innerHTML = 'List of Students in Program';
+                        var rprtTtle = document.getElementById("reportTitle").innerHTML;
+                        //document.getElementById("report1Div").style.display = 'none';
+                        if(!lines[line].includes('School') && !lines[line].includes('List of Students in Program') 
+                        && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
+                            if(line <= 3){
+                                var partsOfStr = lines[line].split(',');
+                                //console.log(partsOfStr);
+                                //console.log('List of Students in Program '+partsOfStr);                   
+                                columnItems.push('Room');
+                                partsOfStr.forEach(headers => {       
+                                    columnItems.push(headers);     
+                                });     
+                                if(!partsOfStr.includes('Student #')){						
+                                    console.log("EXIT NOT ACCPETAPLE FILE");
+                                    /* var element = document.getElementById("errorAlert");
+                                    element.classList.add("show"); */
+                                    modalError.show();
+                                    //console.log('Line: 362');
+                                    break;
+                                }
+                            }
+                            if(lines[line].includes('Homeroom')){
+                                str = lines[line].split("Homeroom");
+                                //console.log(str);
+                                var newStr = str[str.length - 1].replaceAll(",", "");
+                                //console.log(newStr);
+                            }
+                            if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
+                                let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
+                                let resultNull = pattern.test(lines[line]);
+                                var withRoom = newStr+","+lines[line];
+                                var result = withRoom.match(pattern);
+                                //console.log(result);
+                                if(resultNull == true){
+                                    console.log("resultNull "+resultNull);
+                                }
+                                else{
+                                    console.log("break "+resultNull);
+                                    break;
+                                }
+                                console.log("Result "+result);
+                                multiArr.push(result);
+                                items.push(result);
+                            }
+                        }
+                    } 
+                    else if (reportNameLine.includes('List of Students To Take ACCESS')) {
+                        //document.getElementById("report1Div").style.display = 'block';
+                        document.getElementById("reportTitle").innerHTML = 'List of Students To Take ACCESS';
+                        var rprtTtle = document.getElementById("reportTitle").innerHTML;
+                        //document.getElementById("reportDiv").style.display = 'none';
+                        if(!lines[line].includes('School') && !lines[line].includes('List of Students To Take ACCESS') 
+                        && !lines[line].includes('Page break option:') && !lines[line].includes('Report ID:') && !lines[line].includes('Total Student for School:')){
+                            if(line <= 3){
+                                var partsOfStr = lines[line].split(',');
+                                /* console.log('Line '+line);
+                                console.log('List of Students To Take ACCESS');*/                               
+                                columnItems.push('Room');
+                                //columnItems.push('');
+                                partsOfStr.forEach(headers => {          
+                                    columnItems.push(headers);  
+                                });                                
+                                //console.log('Headers:');
+                                //console.log(partsOfStr); 
+                                if(!partsOfStr.includes('Student #')){						
+                                    console.log("EXIT NOT ACCPETAPLE FILE");
+                                    /* var element = document.getElementById("errorAlert");
+                                    element.classList.add("show"); */
+                                    modalError.show();
+                                    //console.log('Line: 408');
+                                    break;
+                                }
+                            }
+                            if(lines[line].includes('Homeroom')){
+                                str = lines[line].split("Homeroom");
+                                //console.log(str);
+                                var newStr = str[str.length - 1].replaceAll(",", "");
+                                //console.log(newStr);
+                            }
+                            if(!lines[line].includes('Student #') && !lines[line].includes('Homeroom')){	
+                                let pattern = /"([^"]*)"|[^\s,'"]+(?:\s+[^\s,'"]+)*|(?<=,)\s*(?=,)/g;
+                                let resultNull = pattern.test(lines[line]);
+                                var withRoom = newStr+","+lines[line];
+                                var result = withRoom.match(pattern);
+                                //console.log(result);
+                                //console.log('Result ' + result);                                
+                                if(resultNull == true){
+                                    console.log("resultNull "+resultNull);                                    
+                                }
+                                else{
+                                    console.log("break "+resultNull);
+                                    break;
+                                }
+                                multiArr.push(result);
+                                items.push(result);
+                            }
+                        }
+                    }
+                    else // Not compatible
+                    {                                                
+                        /* var element = document.getElementById("errorAlert");
+                        element.classList.add("show"); */
+                        modalError.show();
+                        document.getElementById("spnHeadertxt").innerHTML = "";
+                        //var table = $('#reportTbl').DataTable();
+                        // Clear the table
+                        //table.clear().draw();
+                        //var table = $('#reportTbl1').DataTable();
+                        // Clear the table
+                        //table.clear().draw();
+                        
+                        var table = new DataTable('#reportTbl');
+                        table.destroy();        
+                        $('#reportTbl').empty();  
+                        document.getElementById("reportTitle").innerHTML = '';
+                        return;
+                    }                    
+                }
+                var dataSet = items;
+                console.log("Length "+items.length);
+                var dataSetArray = multiArr;                
+                //console.log(dataSet);
+                //console.log(dataSetArray);
+                if (rprtTtle == 'List of Students To Take ACCESS'){
+                    move(columnItems, 2, 1); 
+                    move(columnItems, 17, 5);
+                }
+
+                if (rprtTtle == 'List of Students in Program'){
+                    move(columnItems, 13, 12); 
+                    move(columnItems, 15, 14); 
+                    move(columnItems, 18, 16);
+                }                
+                //console.log("columnItems "+columnItems); 
+                //console.log(columnItems); 
+                var columnsArray = [];
+                var count = 0;
+                columnItems.forEach(headers => {                 
+                    if (headers == '') {           
+                        //console.log("Before Headers: "+headers);             
+                        columnsArray.push({ title: '', visible: false, searchable: false});   
+                    }
+                    if (headers != '') {  
+                        headers = headers.trim();
+                        if (headers == 'Student Name') {
+                            columnsArray.push({ title: headers, className: 'colshow', "render": function (data, type, row, meta) { if ( data === null ) { return ""} return data.replace(/"/g, "")}});                             
+                        }
+                        else if (headers == 'Student #') {
+                            columnsArray.push({ title: 'Student#', className: 'colshow'});
+                        }
+                        else if (headers == 'Sped Model') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Bilingual Special Education Service Models" onclick="event.preventDefault()" style="text-decoration:none">Sped Model</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'PY') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Program Year" onclick="event.preventDefault()" style="text-decoration:none">PY</a>', className: 'colshow'});
+                        }                        
+                        else if (headers == 'RPL') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Reading Proficiency Level" onclick="event.preventDefault()" style="text-decoration:none">RPL</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'WPL') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Writing Proficiency Level" onclick="event.preventDefault()" style="text-decoration:none">WPL</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'LPL') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Listening Proficiency Level" onclick="event.preventDefault()" style="text-decoration:none">LPL</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'SPL') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Speaking Proficiency Level" onclick="event.preventDefault()" style="text-decoration:none">SPL</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'LitPL') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Literacy Proficiency Level" onclick="event.preventDefault()" style="text-decoration:none">LitPL</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'ACCESS Com' || headers == 'Access Com') {
+                            const headersSplit = headers.split(" ");
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="'+headersSplit[0]+' Compsite" onclick="event.preventDefault()" style="text-decoration:none">'+headersSplit[0]+' Com</a>', className: 'colshow'});
+                        }
+                        else if (headers == 'Last ACCESS') {
+                            columnsArray.push({ title: '<a href="#" data-bs-toggle="popover" data-bs-custom-class="custom-popover" title="Last ACCESS" onclick="event.preventDefault()" style="text-decoration:none">Last ACCESS</a>', className: 'colshow'});
+                        }
+                        else {
+                            columnsArray.push({ title: headers, className: 'colshow'});   
+                        }                                         
+                    }                    
+                });
+
+                function move(arr, oldIndex, newIndex) {
+                    // Remove the item from the array
+                    const item = arr.splice(oldIndex, 1)[0];
+                    // Insert the item at the new position
+                    arr.splice(newIndex, 0, item);
+                    return arr;
+                }
+
+                //console.log(columnsArray);
+                var table = new DataTable('#reportTbl');
+                table.destroy();        
+                $('#reportTbl').empty();  
+                $('#reportTbl').DataTable({
+                    destroy: true,
+                    fixedHeader: true,                
+                    fixedColumns: {
+                        start: 4
+                    },                
+                    data: dataSetArray,
+                    columns: columnsArray,
+                    order: [[4, 'asc']],
+                    select: true,
+                    layout: {
+                        top1: {     
+                            searchBuilder: {     
+                                columns: ':visible',
+                            },
+                        },
+                        topStart: {
+                            buttons: [       
+                                {
+                                    extend:'pageLength',
+                                    className: 'btn-small',
+                                }, 
+                                {
+                                    extend: 'collection',
+                                    className: 'btn-small',
+                                    text: 'Export',
+                                    buttons: [                        
+                                        {
+                                            extend: 'pdfHtml5',
+                                            orientation: 'landscape',
+                                            pageSize : 'LEGAL',
+                                            title: rprtTtle,
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'csv',
+                                            title: rprtTtle,
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'excel',
+                                            title: '',
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                    ]
+                                },                                                       
+                                {
+                                    extend: 'colvis',
+                                    columns: ':visible',
+                                },
+                                /* {
+                                    text: 'Create PDF',
+                                    action: function (e, dt, node, config) {
+                                        //alert('Button activated');
+                                        //createPdf();
+                                        //generatePdf();
+                                        generatePDF2();
+                                    }
+                                }, */
+                                {
+                                    extend: 'collection',
+                                    text: 'Access Goal Setting Form',
+                                    className: 'myConditionBtnPdf', // Unique class name
+                                    buttons: [
+                                        /* {
+                                            text: 'Toggle start date',
+                                            action: function (e, dt, node, config) {
+                                                dt.column(-2).visible(!dt.column(-2).visible());
+                                            }
+                                        },
+                                        {
+                                            text: 'Toggle salary',
+                                            action: function (e, dt, node, config) {
+                                                dt.column(-1).visible(!dt.column(-1).visible());
+                                            }
+                                        },
+                                        {
+                                            popoverTitle: 'Visibility control',
+                                            extend: 'colvis',
+                                            collectionLayout: 'two-column'
+                                        }, */
+                                        {
+                                            text: 'Generate PDF',
+                                            action: function (e, dt, node, config) {
+                                                //alert('Button activated');
+                                                //createPdf();
+                                                //generatePdf();
+                                                generatePDF2();
+                                            }
+                                        },
+                                        {
+                                            text: 'Edit AGS Form',
+                                            action: function (e, dt, node, config) {
+                                                createPdf();
+                                            }
+                                        }
+                                    ]
+                                },
+                            ]
+                        },                                
+                    },
+                    language: {
+                        search: '_INPUT_',
+                        searchPlaceholder: 'Search...',
+                        paginate: {
+                            first: 'First',
+                            next: 'Next',
+                            previous: 'Previous',
+                            last: 'Last'
+                        },
+                        searchBuilder: {
+                            add: 'Add Filter',
+                            title: 'Search Builder',                            
+                        }
+                    },
+                    drawCallback: function () { 
+                        let tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                        let tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl, {
+                            boundary: document.body,
+                            container: 'body',
+                            trigger: 'hover'
+                        })); 
+                        tooltipList.forEach((tooltip) => { $('.tooltip').hide(); });
+                        
+                        let popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+                        let popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, {
+                            boundary: document.body,
+                            container: 'body',
+                            placement: 'top',
+                            trigger: 'hover'
+                        })); 				  
+                        popoverList.forEach((popover) => { $('.popover').hide(); });	
+
+                        var tblName = $(this).attr('id');
+                        $("#"+tblName).LoadingOverlay("show", {
+                            //background: "#cae4fa",
+                            size: '75',
+                            maxSize: '75',
+                        });
+                        $("#"+tblName).LoadingOverlay("hide", true);                        
+                    },
+                    initComplete: function() {
+                        var tblName = $(this).attr('id'); 
+                        var table = $("#"+tblName).DataTable();
+                        table.button().add('2-0', {
+                            text: 'Only Show Student',
+                            className: 'blue',
+                            action: function ( e, dt, node, config ) {
+                                if(rprtTtle == 'List of Students in Program'){
+                                    if(table.button('2-0').text() == "Only Show Student"){
+                                        table.columns(':visible').visible(this.active());
+                                        this.active(!this.active());
+                                        table.columns([1,3]).visible(this.active());                                    
+                                        this.active(!this.active());
+                                        table.button('2-0').text('Show All');
+                                    }
+                                    else if(table.button('2-0').text() == "Show All"){
+                                        table.columns('.colshow').visible(true);
+                                        table.button('2-0').text('Only Show Student');
+                                    }
+                                }
+                                else if(rprtTtle == 'List of Students To Take ACCESS'){
+                                    if(table.button('2-0').text() == "Only Show Student"){
+                                        table.columns(':visible').visible(this.active());
+                                        this.active(!this.active());
+                                        table.columns([3,4]).visible(this.active());                                    
+                                        this.active(!this.active());
+                                        table.button('2-0').text('Show All');
+                                    }
+                                    else if(table.button('2-0').text() == "Show All"){
+                                        table.columns('.colshow').visible(true);                                        
+                                        table.button('2-0').text('Only Show Student');
+                                    }
+                                }                                                                    
+                            }
+                        });   
+                        if (rprtTtle != 'List of Students To Take ACCESS') {
+                            // Find the button by its class and hide it using jQuery
+                            //$('.myConditionBtnPdf').hide();
+                            $('.myConditionBtnPdf').addClass('invisible');
+                            // Or, use the DataTables API to remove it completely
+                            // var table = $('#myTable').DataTable();
+                            // table.button('.myConditionBtn').remove();
+                        }           
+                    }
+                });            
+            };
+            reader.readAsText(file);  	
+        };  
+        /* $(document).ready(function() {
+            var table = $('#reportTbl').DataTable();
+            var searchBuilder1 = new $.fn.dataTable.SearchBuilder(table, {
+                columns: [0,1,3,5,6,8,9,1,13,15,16,19,20,21,23,24,25,26,27], 
+                preDefined: {
+                    criteria: [
+                        {
+                            condition: '!=',
+                            data: 'Dis Code',
+                            value: ['']
+                        },
+                        {
+                            condition: '!=',
+                            data: 'Dis Code',
+                            value: ['504']
+                        },
+                        {
+                            condition: '=',
+                            data: 'Grade',
+                            value: ['5']
+                        },                                        
+                    ],
+                    logic: 'AND'
+                },
+            });
+            //table.searchBuilder.container().addClass('sb_class');
+            //table.searchBuilder.container().addClass('sb_class');
+            $('#searchBuilderContainer1').append(searchBuilder1.container());
+                searchBuilder1.on('search', function(e, settings) {
+                table.search(searchBuilder1.getDetails()).draw();
+            });
+        }); */
+        
+        /* const myAlert = document.getElementById('errorAlert')
+        myAlert.addEventListener('close.bs.alert', event => {
+            event.preventDefault();            
+            var element = document.getElementById("errorAlert");
+            element.classList.add("hide");
+            element.classList.remove("show");
+            document.getElementById("spnHeadertxt").innerHTML = "";
+        }) */
+
+        $(document).on('click','.dtsb-search',function(){
+            $(".reportTbl").LoadingOverlay("show", {
+                //background: "#cae4fa",
+                size: '75',
+                maxSize: '75',
+            });
+            $(".reportTbl").LoadingOverlay("hide", true);            
+        });
+
+        var myModal = document.getElementById('staticBackdrop');
+        var modalError = bootstrap.Modal.getOrCreateInstance(myModal);        
+        
+        function createPdf(){
+            //alert("createPDF");
+            // 1. Select the element you want to "click"
+            /* const element = document.getElementById('showToastCustomBtn');
+            console.log("createPdf()");
+            // 2. Trigger the click event
+            if (element) {
+                element.click();
+                console.log("click()");
+            } */
+
+            // This triggers the event listener you already wrote
+            document.getElementById('showToastCustomBtn').click();
+        }
+
+
+
+    function generatePdf() {
+        var table = $('#reportTbl').DataTable();
+        //var filteredData = table.rows({ search: 'applied' }).data().toArray();        
+        //console.log(filteredData);
+
+        // Get the data for all filtered rows
+        // The result is an array of arrays (or objects, depending on your data source)
+        var allFilteredData = table
+            .rows({ search: 'applied' })
+            .data();
+
+        var specificColumnsData = [];
+
+        // Iterate over each filtered row
+        allFilteredData.each(function(rowData) {
+            // Push the values from specific columns (e.g., column 0 and column 3)
+            // Adjust indices based on your table structure
+            specificColumnsData.push({
+                room: rowData[0],
+                column3: rowData[3],
+                studnetName: rowData[4],
+                grade: rowData[6]
+            });
+        });
+
+        console.log(specificColumnsData);
+        console.log(typeof specificColumnsData);
+        // Loop through the outer array (rows)
+        $.each(specificColumnsData, function(outerIndex, innerArray) {
+            console.log("Row index: " + outerIndex);
+
+            // Loop through the inner array (elements in the row)
+            $.each(innerArray, function(innerIndex, value) {
+                console.log("  Column index: " + innerIndex + ", Value: " + value);
+                
+                // You can also access the value using innerArray[innerIndex] or 'this' in the inner loop (though 'this' is wrapped as an Object)
+                // console.log("  Value via 'this': " + this); 
+
+
+            });
+        });
+        /* const tableRowsData = [
+            { item: 'Apple', quantity: 10, price: 1.50 },
+            { item: 'Banana', quantity: 5, price: 0.75 },
+            { item: 'Cherry', quantity: 20, price: 0.50 }
+        ]; */
+        //$.each(specificColumnsData, function(index, value) {
+        // Code to execute for each element
+        //console.log('Index: ' + index + ', Value: ' + value);
+        //});
+
+        //$.each(specificColumnsData, function(key, value) {
+            //console.log(key + ": " + value);
+            // You can also use 'this' to access the value:
+            // console.log(key + ": " + this); 
+        //});
+        //alert("generatePdf");
+        var sdd = "tt_";
+        const docDefinition = {
+        content: [
+          { text: 'WIDA ACCESS Goal Setting Sheet SY26', style: [ 'mainHeader', 'anotherStyle' ] },
+          { text: 'Hoja de establecimiento de objetivos de WIDA ACCESS', style: 'anotherStyle' },          
+          //{ text: ' ', margin: [0, 10], },
+          {
+                columns: [
+                    { width: '*', text: '' },
+                    {
+                        width: 'auto',
+                            layout: 'noBorders', // This is the key property
+                            table: {
+                            widths: [200, 200],
+                            body: [
+                            [
+                                { text: "Student Name: NMno inihihihi-dsdsdsds", style: "tableHeader", colSpan: 2 },
+                                { text: "", style: "tableHeader" }
+                            ],
+                            ["Grade/Grado : "+sdd+"06", "Room: 313"]
+                            ],
+                            alignment: "center"
+                            }
+                    },
+                    { width: '*', text: '' },
+                ]
+          },
+          { text: ' ', margin: [0, 10], },
+          { text: 'Current WIDA ACCESS Scores', style: [ 'header', 'anotherStyle' ] },
+          {
+                columns: [
+                    { width: '*', text: '' },
+                    {
+                        width: 'auto',
+                            table: {
+                            widths: [200, 200],
+                            body: [
+                            [
+                                { text: "Language Domain\nDominio del idioma", style: [ 'tableHeader', 'tableCells' ], fillColor: '#B9D9EB' },
+                                { text: "Proficiency Level (1-6)\nNivel de competencia", style: [ 'tableHeader', 'tableCells' ], fillColor: '#B9D9EB' }
+                            ],
+                             [
+                                { text: "Listening/Escuchar", style: [ 'tableHeader', 'tableCells' ] },
+                                { text: "3", style: [ 'tableHeader', 'tableCells' ] }
+                            ],
+                             [
+                                { text: "Speaking/Discurso", style: [ 'tableHeader', 'tableCells' ] },
+                                { text: "4", style: [ 'tableHeader', 'tableCells' ] }
+                            ],
+                             [
+                                { text: "Reading/Lectura", style: [ 'tableHeader', 'tableCells' ] },
+                                { text: "5", style: [ 'tableHeader', 'tableCells' ] }
+                            ],
+                             [
+                                { text: "Writing/Escritura", style: [ 'tableHeader', 'tableCells' ] },
+                                { text: "4", style: [ 'tableHeader', 'tableCells' ] }
+                            ],
+                             [
+                                { text: "Overall Score\nPuntuación general", style: [ 'tableHeader', 'tableCells' ] },
+                                { text: "5", style: [ 'tableHeader', 'tableCells' ] }
+                            ]
+                            ],
+                            alignment: "center"
+                            }
+                    },
+                    { width: '*', text: '' },
+                ]
+          },     
+          { text: ' ', margin: [0, 10], },     
+          { text: 'What will you do to demonstrate your English proficiency during each section of the test?\n¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?', style: [ 'questions', 'anotherStyle2' ] },
+          { text: ' ', margin: [0, 10], },     
+          { text: 'Listening:__________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: ' ', margin: [0, 10], },
+          { text: 'Reading:___________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: '____________________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: 'Wrting:____________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: '____________________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: 'Speaking:__________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          { text: '____________________________________________________________________________________', style: [ 'questions', 'anotherStyle2' ] },
+          {
+            text: 'This text will start on a new page.',
+            pageBreak: 'before' // Forces a page break immediately before this element
+          },
+        ],
+        
+        styles: {
+          mainHeader: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 0, 0, 10]
+          },
+          header: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 0, 0, 10]
+          },
+		  anotherStyle: {
+			italics: true,
+			alignment: 'center'
+		  },
+          tableCells: {
+            alignment: 'center' // Centered text for a general cell style
+          },
+          questions: {
+            fontSize: 12,
+            bold: true,
+            margin: [0, 0, 0, 10]
+          },
+        }
+      };
+
+      pdfMake.createPdf(docDefinition).open();
+    }
+    
+
+    function generatePDF2() {
+        var table = $('#reportTbl').DataTable();
+
+        /* const keyName = 'preferences';
+
+        if (!localStorage.getItem(keyName)) {
+            // The item does not exist
+            console.log(`The item "${keyName}" does not exist.`);
+            // Define an object
+            const userPreferences = {
+            theme: 'dark',
+            fontSize: 14,
+            notifications: true
+            };
+            // 1. Store the object (convert to a JSON string first)
+            localStorage.setItem('preferences', JSON.stringify(userPreferences));
+        } else {
+            // The item exists
+            console.log(`The item "${keyName}" exists.`);
+            // 2. Retrieve the object (parse the JSON string back into a JavaScript object)
+            const storedPreferences = JSON.parse(localStorage.getItem('preferences'));
+
+            // Now you can access properties
+            console.log(storedPreferences.theme); // Outputs: dark
+            console.log(storedPreferences.fontSize); // Outputs: 14
+        } */
+
+        const keyName1 = 'sections';
+
+        if (!localStorage.getItem(keyName1)) {
+            // The item does not exist
+            console.log(`The item "${keyName1}" does not exist.`);
+            /* // Define an object
+            const userSections = {
+            sectionQ1: 'What will you do to demonstrate your English proficiency during each section of the test?¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?',            
+            sectionOne: 'What will you do to demonstrate your English proficiency during each section of the test?¿Qué harás para demostrar tu dominio del inglés durante cada sección del examen?',
+            sectionTwo: 'Listening',
+            sectionThree: 'Speaking',
+            sectionThree: 'Speaking',
+            sectionThree: 'Speaking'
+            };
+            // 1. Store the object (convert to a JSON string first)
+            localStorage.setItem('sections', JSON.stringify(userSections)); */
+            getSetItems();
+        } else {
+            // The item exists
+            console.log(`The item "${keyName1}" exists.`);
+            // 2. Retrieve the object (parse the JSON string back into a JavaScript object)
+            getSetSections();
+
+            /* const storedSections = getSetSections();
+            console.log(storedSections);
+            // Now you can access properties
+            console.log(storedSections.sectionOne); // Outputs: Long.....
+            console.log(storedSections.sectionTwo); // Outputs: Listening
+            console.log(storedSections.sectionThree); // Outputs: Speaking         
+            
+            var q1 = storedSections.sectionQ1;
+            alert(q1); */
+            var q1 = document.getElementById('textareaQuestion').value;
+            var sec1 = document.getElementById('textareaSection1').value;
+            var sec2 = document.getElementById('textareaSection2').value;
+            var sec3 = document.getElementById('textareaSection3').value;
+            var sec4 = document.getElementById('textareaSection4').value;
+            var sec5 = document.getElementById('textareaSection5').value;
+        }    
+        
+        //var filteredData = table.rows({ search: 'applied' }).data().toArray();        
+        //console.log(filteredData);
+
+        // Get the data for all filtered rows
+        // The result is an array of arrays (or objects, depending on your data source)
+        var allFilteredData = table
+            .rows({ search: 'applied' })
+            .data();
+
+        var specificColumnsData = [];
+        var sdd = "tt_";
+        // Iterate over each filtered row
+        allFilteredData.each(function(rowData) {
+            // Push the values from specific columns (e.g., column 0 and column 3)
+            // Adjust indices based on your table structure
+            specificColumnsData.push({
+                room: rowData[0].slice(1),
+                column3: rowData[3],
+                studentName: rowData[4].replace(/"/g, '').split(', ').reverse().join(' '),
+                grade: rowData[6],
+                reading: rowData[18],
+                writing: rowData[19],
+                listening: rowData[20],
+                speaking: rowData[22],
+                access: rowData[24], 
+            });
+        });
+            // 1. Dynamic Data (Could be from an API)
+            /* const users = [
+                { id: 1, name: 'Alice', role: 'Admin', bio: 'Expert in system security.' },
+                { id: 2, name: 'Bob', role: 'Editor', bio: 'Focuses on content strategy.' },
+                { id: 3, name: 'Charlie', role: 'User', bio: 'Regular platform user.' }
+            ]; */
+
+            // 2. Build the Document Definition
+            const docDefinition = {
+                //header: { text: 'Company Personnel Report', alignment: 'right', margin: [0, 10, 20, 0] },
+                /* footer: (currentPage, pageCount) => ({
+                    text: `Page ${currentPage} of ${pageCount}`,
+                    alignment: 'center',
+                    margin: [0, 10]
+                }), */
+                content: [
+                    //{ text: 'User Summary Table', style: 'header' },
+                    /* {
+                        table: {
+                            headerRows: 1,
+                            widths: [50, '*', 100],
+                            body: [
+                                [{ text: 'ID', bold: true }, { text: 'Name', bold: true }, { text: 'Role', bold: true }],
+                                ...users.map(u => [u.id, u.name, u.role])
+                            ]
+                        },
+                        margin: [0, 0, 0, 20]
+                    }, */
+                    
+                    // Force new pages for detailed profiles
+                    ...specificColumnsData.map(u => [
+                        /* { text: `Detailed Profile: ${u.studentName}`, style: 'subheader' },
+                        { text: `Employee ID: ${u.column3}` },
+                        { text: `Position: ${u.room}`, margin: [0, 5] },
+                        { text: `Biography:`, bold: true, margin: [0, 10, 0, 5] },
+                        { text: u.grade },
+                        { text:"", pageBreak: 'before' } */
+
+                        { text: 'WIDA ACCESS Goal Setting Sheet SY26', style: [ 'mainHeader', 'anotherStyle' ] },
+                        { text: 'Hoja de establecimiento de objetivos de WIDA ACCESS', style: 'anotherStyle' },          
+                        { text: ' ', margin: [0, 2], },
+                        {
+                                columns: [
+                                    { width: '*', text: '' },
+                                    {
+                                        width: 'auto',
+                                            layout: 'noBorders', // This is the key property
+                                            table: {
+                                            widths: [200, 200],
+                                            body: [
+                                            [
+                                                { text: "Student Name: "+u.studentName, style: "tableHeader", colSpan: 2 },
+                                                { text: "", style: "tableHeader" }
+                                            ],
+                                            ["Grade/Grado : "+u.grade, "Room: "+u.room]
+                                            ],
+                                            alignment: "center"
+                                            }
+                                    },
+                                    { width: '*', text: '' },
+                                ]
+                        },
+                        { text: ' ', margin: [0, 1], },
+                        { text: 'Current WIDA ACCESS Scores', style: [ 'header', 'anotherStyle' ] },
+                        {
+                                columns: [
+                                    { width: '*', text: '' },
+                                    {
+                                        width: 'auto',
+                                            table: {
+                                            widths: [200, 200],
+                                            body: [
+                                            [
+                                                { text: "Language Domain\nDominio del idioma", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' },
+
+                                                { text: "Proficiency Level (1-6)\nNivel de competencia", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' }
+                                            ],
+                                            [
+                                                { text: "Listening/Escuchar", style: [ 'tableHeader', 'tableCells' ] },
+                                                { text: u.listening, style: [ 'tableHeader', 'tableCells' ] }
+                                            ],
+                                            [
+                                                { text: "Speaking/Discurso", style: [ 'tableHeader', 'tableCells' ] },
+                                                { text: u.speaking, style: [ 'tableHeader', 'tableCells' ] }
+                                            ],
+                                            [
+                                                { text: "Reading/Lectura", style: [ 'tableHeader', 'tableCells' ] },
+                                                { text: u.reading, style: [ 'tableHeader', 'tableCells' ] }
+                                            ],
+                                            [
+                                                { text: "Writing/Escritura", style: [ 'tableHeader', 'tableCells' ] },
+                                                { text: u.writing, style: [ 'tableHeader', 'tableCells' ] }
+                                            ],
+                                            [
+                                                { text: "Overall Score\nPuntuación general", style: [ 'tableHeader', 'tableCells' ] },
+                                                { text: u.access, style: [ 'tableHeader', 'tableCells' ] }
+                                            ]
+                                            ],
+                                            alignment: "center"
+                                            }
+                                    },
+                                    { width: '*', text: '' },
+                                ]
+                        },     
+                        { text: ' ', margin: [0, 2], },   
+                        {
+                            columns: [
+                                { width: '*', text: '' },
+                                {
+                                    width: 'auto',
+                                        table: {
+                                        widths: [200, 200],
+                                        heights: [60,10,50,10,50,10,50,10,50,10,50],
+                                        body: [
+                                        [
+                                            { text: q1, style: [ 'tableHeader', '' ], colSpan: 2, border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ]}
+                                        ],                                                                            
+                                        [
+                                            { text: sec1, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
+                                        ],
+                                        [
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
+                                        ],                                        
+                                        [
+                                            { text: sec2, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
+                                        ],
+                                        [
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
+                                        ],   
+                                        [
+                                            { text: sec3, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
+                                        ],
+                                        [
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
+                                        ],     
+                                        [
+                                            { text: sec4, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
+                                        ],
+                                        [
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
+                                        ],     
+                                        [
+                                            { text: sec5, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
+                                        ],
+                                        [
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
+                                            { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
+                                        ]  
+                                        ],
+                                        alignment: "center"
+                                        }
+                                },
+                                { width: '*', text: '' },
+                            ]
+                        },
+
+
+                        { text:"", pageBreak: 'before' }
+                        /* {
+                            text: 'This text will start on a new page.',
+                            pageBreak: 'before' // Forces a page break immediately before this element
+                        }, */
+
+                    ]).flat()
+                ],
+                styles: {
+                    //header: { fontSize: 22, bold: true, margin: [0, 0, 0, 10] },
+                    //subheader: { fontSize: 18, bold: true, margin: [0, 10, 0, 5] }
+                    mainHeader: {
+                        fontSize: 18,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    },
+                    header: {
+                        fontSize: 16,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    },
+                    anotherStyle: {
+                        italics: true,
+                        alignment: 'center'
+                    },
+                    tableCells: {
+                        alignment: 'center' // Centered text for a general cell style
+                    },
+                    questions: {
+                        fontSize: 12,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    },
+                }
+            };
+
+            // 3. Generate and Open
+            pdfMake.createPdf(docDefinition).open();
+        }
+	
+    function generatePDFGood() {
+            // 1. Dynamic Data (Could be from an API)
+            const users = [
+                { id: 1, name: 'Alice', role: 'Admin', bio: 'Expert in system security.' },
+                { id: 2, name: 'Bob', role: 'Editor', bio: 'Focuses on content strategy.' },
+                { id: 3, name: 'Charlie', role: 'User', bio: 'Regular platform user.' }
+            ];
+
+            // 2. Build the Document Definition
+            const docDefinition = {
+                //header: { text: 'Company Personnel Report', alignment: 'right', margin: [0, 10, 20, 0] },
+                /* footer: (currentPage, pageCount) => ({
+                    text: `Page ${currentPage} of ${pageCount}`,
+                    alignment: 'center',
+                    margin: [0, 10]
+                }), */
+                content: [
+                    //{ text: 'User Summary Table', style: 'header' },
+                    /* {
+                        table: {
+                            headerRows: 1,
+                            widths: [50, '*', 100],
+                            body: [
+                                [{ text: 'ID', bold: true }, { text: 'Name', bold: true }, { text: 'Role', bold: true }],
+                                ...users.map(u => [u.id, u.name, u.role])
+                            ]
+                        },
+                        margin: [0, 0, 0, 20]
+                    }, */
+                    
+                    // Force new pages for detailed profiles
+                    ...users.map(u => [
+                        { text: `Detailed Profile: ${u.name}`, style: 'subheader' },
+                        { text: `Employee ID: ${u.id}` },
+                        { text: `Position: ${u.role}`, margin: [0, 5] },
+                        { text: `Biography:`, bold: true, margin: [0, 10, 0, 5] },
+                        { text: u.bio, pageBreak: 'before' }
+                    ]).flat()
+                ],
+                styles: {
+                    header: { fontSize: 22, bold: true, margin: [0, 0, 0, 10] },
+                    subheader: { fontSize: 18, bold: true, margin: [0, 10, 0, 5] }
+                }
+            };
+
+            // 3. Generate and Open
+            pdfMake.createPdf(docDefinition).open();
+        }
+    
+    /* function saveTextFile(content, filename) {
+        // 1. Create a Blob object with the file content and MIME type
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+
+        // 2. Create an object URL from the Blob
+        const fileUrl = URL.createObjectURL(blob);
+
+        // 3. Create a temporary anchor element for the download
+        const link = document.createElement('a');
+        link.href = fileUrl;
+
+        // 4. Set the 'download' attribute to specify the file name
+        link.download = filename;
+
+        // 5. Append the link to the document body (necessary for some browsers) and simulate a click
+        document.body.appendChild(link);
+        link.click();
+
+        // 6. Clean up by removing the link and revoking the object URL to free memory
+        document.body.removeChild(link);
+        URL.revokeObjectURL(fileUrl);
+    }
+
+    // Example usage:
+    const textToSave = "Hello, world! This is the content of my text file.";
+    saveTextFile(textToSave, 'myFile.txt'); */
+
+    
+    </script>
+  </body>
+</html>
