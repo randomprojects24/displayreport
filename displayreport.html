@@ -486,20 +486,20 @@
                     <label for="textareaSection4" class="form-label">Section 4</label>
                     <textarea class="form-control" id="textareaSection4" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
                 </div>
-                <!--<div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="textareaSection5" class="form-label">Section 5</label>
                     <textarea class="form-control" id="textareaSection5" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
-                </div>-->
-                <div class="mb-3 sec5">
+                </div> -->
+                <!-- <div class="mb-3 sec5">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <label for="textareaSection5" class="form-label mb-0">Section 5</label>                        
                         <div class="form-check form-switch">
                             <label for="switchToggle" class="form-label mb-0">Show</label>
-                            <input class="form-check-input" type="checkbox" role="switch" id="switchToggle">
+                            <input class="form-check-input" type="checkbox" role="switch" id="switchToggle" checked>
                         </div>
                     </div>
                     <textarea class="form-control" id="textareaSection5" rows="1" style="resize: none;" maxlength="50" placeholder="Start Typin..." wrap="soft"></textarea>
-                </div> 
+                </div> -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-small" data-bs-dismiss="modal">Close</button>
@@ -517,20 +517,34 @@
 
         }); */
 
-        document.getElementById('switchToggle').addEventListener('change', function() {
-            // 3. Check the 'checked' property to see if it's switched (on/off)
+        /* document.getElementById('switchToggle').addEventListener('change', function() {            
+            const s1ModalStatus = true;
+            const s2ModalStatus = true;
+            const s3ModalStatus = document.getElementById('textareaSection3').value;
+            const s4ModalStatus = document.getElementById('textareaSection4').value;
+            const s5ModalStatus = document.getElementById('textareaSection5').value;
+
+            const sectionsStatus = {
+                sectionOne: s1ModalStatus,
+                sectionTwo: s2ModalStatus,
+                sectionThree: s3ModalStatus,
+                sectionFour: s4ModalStatus,
+                sectionFive: s5ModalStatus
+            };
+            
+            // 3. Check the 'checked' property to see if it's switched (on/off)           
             if (this.checked) {
                 // Code to run if the switch is ON
                 console.log('Switch is ON');
                 //statusText.textContent = 'On';
-                
+                document.getElementById("textareaSection5").disabled = false;
             } else {
                 // Code to run if the switch is OFF
                 console.log('Switch is OFF');
-                
+                document.getElementById("textareaSection5").disabled = true;
                 //statusText.textContent = 'Off';
             }
-        });
+        }); */
 
         document.addEventListener('DOMContentLoaded', (event) => {
             /* const toastLiveExample = document.getElementById('centerToast');
@@ -570,15 +584,13 @@
             const s2Modal = document.getElementById('textareaSection2').value;
             const s3Modal = document.getElementById('textareaSection3').value;
             const s4Modal = document.getElementById('textareaSection4').value;
-            const s5Modal = document.getElementById('textareaSection5').value;
 
             const userSections = {
                 sectionQ1: q1Modal,
                 sectionOne: s1Modal,
                 sectionTwo: s2Modal,
                 sectionThree: s3Modal,
-                sectionFour: s4Modal,
-                sectionFive: s5Modal
+                sectionFour: s4Modal
             };
             // 1. Store the object (convert to a JSON string first)
             localStorage.setItem('sections', JSON.stringify(userSections));
@@ -672,8 +684,8 @@
                 sectionOne: 'Listening:',
                 sectionTwo: 'Reading:',
                 sectionThree: 'Writing:',
-                sectionFour: 'Speaking:',
-                sectionFive: 'Test:'
+                sectionFour: 'Speaking:'//,
+                //sectionFive: 'Test:'
             };
                 // 1. Store the object (convert to a JSON string first)
             localStorage.setItem('sections', JSON.stringify(userSections));
@@ -687,7 +699,7 @@
             document.getElementById('textareaSection2').value = storedSections.sectionTwo;  
             document.getElementById('textareaSection3').value = storedSections.sectionThree;  
             document.getElementById('textareaSection4').value = storedSections.sectionFour;  
-            document.getElementById('textareaSection5').value = storedSections.sectionFive;    
+            //document.getElementById('textareaSection5').value = storedSections.sectionFive;    
         } 
 
         //const $output = document.getElementById('output')
@@ -1354,6 +1366,19 @@
     function generatePDF2() {
         var table = $('#reportTbl').DataTable();
 
+        /* var externalDataRetrievedFromServer = [
+            { name: 'Bartek', age: 34 },
+            { name: 'John', age: 27 },
+            { name: 'Elizabeth', age: 30 },
+        ];
+
+        var dd = {
+            content: [
+                { text: 'Dynamic parts', style: 'header' },
+                table(externalDataRetrievedFromServer, ['name', 'age'])
+            ]
+        } */
+
         /* const keyName = 'preferences';
 
         if (!localStorage.getItem(keyName)) {
@@ -1415,7 +1440,7 @@
             var sec2 = document.getElementById('textareaSection2').value;
             var sec3 = document.getElementById('textareaSection3').value;
             var sec4 = document.getElementById('textareaSection4').value;
-            var sec5 = document.getElementById('textareaSection5').value;
+            //var sec5 = document.getElementById('textareaSection5').value;
         }    
         
         //var filteredData = table.rows({ search: 'applied' }).data().toArray();        
@@ -1445,6 +1470,8 @@
                 access: rowData[24], 
             });
         });
+
+        const sections = [sec1, sec2, sec3, sec4];
             // 1. Dynamic Data (Could be from an API)
             /* const users = [
                 { id: 1, name: 'Alice', role: 'Admin', bio: 'Expert in system security.' },
@@ -1487,25 +1514,25 @@
                         { text: 'Hoja de establecimiento de objetivos de WIDA ACCESS', style: 'anotherStyle' },          
                         { text: ' ', margin: [0, 2], },
                         {
-                                columns: [
-                                    { width: '*', text: '' },
-                                    {
-                                        width: 'auto',
-                                            layout: 'noBorders', // This is the key property
-                                            table: {
-                                            widths: [200, 200],
-                                            body: [
-                                            [
-                                                { text: "Student Name: "+u.studentName, style: "tableHeader", colSpan: 2 },
-                                                { text: "", style: "tableHeader" }
-                                            ],
-                                            ["Grade/Grado : "+u.grade, "Room: "+u.room]
-                                            ],
-                                            alignment: "center"
-                                            }
-                                    },
-                                    { width: '*', text: '' },
-                                ]
+                            columns: [
+                                { width: '*', text: '' },
+                                {
+                                    width: 'auto',
+                                        layout: 'noBorders', // This is the key property
+                                        table: {
+                                        widths: [200, 200],
+                                        body: [
+                                        [
+                                            { text: "Student Name: "+u.studentName, style: "tableHeader", colSpan: 2 },
+                                            { text: "", style: "tableHeader" }
+                                        ],
+                                        ["Grade/Grado : "+u.grade, "Room: "+u.room]
+                                        ],
+                                        alignment: "center"
+                                        }
+                                },
+                                { width: '*', text: '' },
+                            ]
                         },
                         { text: ' ', margin: [0, 1], },
                         { text: 'Current WIDA ACCESS Scores', style: [ 'header', 'anotherStyle' ] },
@@ -1517,31 +1544,30 @@
                                             table: {
                                             widths: [200, 200],
                                             body: [
-                                            [
-                                                { text: "Language Domain\nDominio del idioma", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' },
-
-                                                { text: "Proficiency Level (1-6)\nNivel de competencia", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' }
-                                            ],
-                                            [
-                                                { text: "Listening/Escuchar", style: [ 'tableHeader', 'tableCells' ] },
-                                                { text: u.listening, style: [ 'tableHeader', 'tableCells' ] }
-                                            ],
-                                            [
-                                                { text: "Speaking/Discurso", style: [ 'tableHeader', 'tableCells' ] },
-                                                { text: u.speaking, style: [ 'tableHeader', 'tableCells' ] }
-                                            ],
-                                            [
-                                                { text: "Reading/Lectura", style: [ 'tableHeader', 'tableCells' ] },
-                                                { text: u.reading, style: [ 'tableHeader', 'tableCells' ] }
-                                            ],
-                                            [
-                                                { text: "Writing/Escritura", style: [ 'tableHeader', 'tableCells' ] },
-                                                { text: u.writing, style: [ 'tableHeader', 'tableCells' ] }
-                                            ],
-                                            [
-                                                { text: "Overall Score\nPuntuación general", style: [ 'tableHeader', 'tableCells' ] },
-                                                { text: u.access, style: [ 'tableHeader', 'tableCells' ] }
-                                            ]
+                                                [
+                                                    { text: "Language Domain\nDominio del idioma", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' },
+                                                    { text: "Proficiency Level (1-6)\nNivel de competencia", style: [ 'tableHeader', 'tableCells' ], fillColor: '#cff4fc' }
+                                                ],
+                                                [
+                                                    { text: "Listening/Escuchar", style: [ 'tableHeader', 'tableCells' ] },
+                                                    { text: u.listening, style: [ 'tableHeader', 'tableCells' ] }
+                                                ],
+                                                [
+                                                    { text: "Speaking/Discurso", style: [ 'tableHeader', 'tableCells' ] },
+                                                    { text: u.speaking, style: [ 'tableHeader', 'tableCells' ] }
+                                                ],
+                                                [
+                                                    { text: "Reading/Lectura", style: [ 'tableHeader', 'tableCells' ] },
+                                                    { text: u.reading, style: [ 'tableHeader', 'tableCells' ] }
+                                                ],
+                                                [
+                                                    { text: "Writing/Escritura", style: [ 'tableHeader', 'tableCells' ] },
+                                                    { text: u.writing, style: [ 'tableHeader', 'tableCells' ] }
+                                                ],
+                                                [
+                                                    { text: "Overall Score\nPuntuación general", style: [ 'tableHeader', 'tableCells' ] },
+                                                    { text: u.access, style: [ 'tableHeader', 'tableCells' ] }
+                                                ]
                                             ],
                                             alignment: "center"
                                             }
@@ -1557,13 +1583,13 @@
                                     width: 'auto',
                                         table: {
                                         widths: [200, 200],
-                                        heights: [60,10,50,10,50,10,50,10,50,10,50],
+                                        heights: [60,10,50,10,50,10,50,10,50],
                                         body: [
                                         [
                                             { text: q1, style: [ 'tableHeader', '' ], colSpan: 2, border: [false, false, false, false] },
                                             { text: "", style: [ 'tableHeader', '' ]}
                                         ],                                                                            
-                                        [
+                                        /* [
                                             { text: sec1, style: [ 'tableHeader', '' ],  border: [false, false, false, false] },
                                             { text: "", style: [ 'tableHeader', '' ],  border: [false, false, false, false] }
                                         ],
@@ -1602,7 +1628,19 @@
                                         [
                                             { text: "", style: [ 'tableHeader', '' ],  border: [true, true, false, true], fillColor: '#F8F8F8' },
                                             { text: "", style: [ 'tableHeader', '' ],  border: [false, true, true, true], fillColor: '#F8F8F8' }
-                                        ]  
+                                        ]  */ 
+                                            ...sections.flatMap(secText => [
+                                                // The Label Row
+                                                [
+                                                    { text: secText, style: 'tableHeader', border: [false, false, false, false] },
+                                                    { text: "", border: [false, false, false, false] }
+                                                ],
+                                                // The Grey Input Box Row
+                                                [
+                                                    { text: "", style: 'tableHeader', border: [true, true, false, true], fillColor: '#F8F8F8', margin: [0, 10, 0, 10] },
+                                                    { text: "", style: 'tableHeader', border: [false, true, true, true], fillColor: '#F8F8F8', margin: [0, 10, 0, 10] }
+                                                ]
+                                            ])
                                         ],
                                         alignment: "center"
                                         }
@@ -1728,8 +1766,33 @@
     const textToSave = "Hello, world! This is the content of my text file.";
     saveTextFile(textToSave, 'myFile.txt'); */
 
+    function buildTableBody(data, columns) {
+        var body = [];
+
+        body.push(columns);
+
+        data.forEach(function(row) {
+            var dataRow = [];
+
+            columns.forEach(function(column) {
+                dataRow.push(row[column].toString());
+            })
+
+            body.push(dataRow);
+        });
+
+        return body;
+    }
+
+    function table(data, columns) {
+        return {
+            table: {
+                headerRows: 1,
+                body: buildTableBody(data, columns)
+            }
+        };
+    }
     
     </script>
   </body>
 </html>
-
