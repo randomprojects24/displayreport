@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chicago Weather Dashboard</title>
+    <style>
+        :root { --bg: #202124; --card: #303134; --text: #e8eaed; --sub: #9aa0a6; --accent: #8ab4f8; }
+        body {
+            margin: 0; padding: 0; width: 800px; height: 480px;
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+        .header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .location { font-size: 32px; font-weight: 300; }
+        .time { font-size: 18px; color: var(--sub); }
+        .main-content { display: flex; flex: 1; padding: 0 40px; align-items: center; justify-content: space-around; }
+        .current-main { text-align: center; }
+        .current-temp { font-size: 96px; font-weight: 200; line-height: 1; margin: 10px 0; }
+        .current-desc { font-size: 20px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; font-size: 16px; }
+        .label { color: var(--sub); margin-right: 5px; }
+        .forecast-container {
+            height: 150px; background: var(--card);
+            display: flex; justify-content: space-evenly; align-items: center;
+            padding: 10px 20px; border-top: 1px solid #444;
+        }
+        .forecast-card { text-align: center; width: 120px; }
+        .fc-day { font-size: 14px; font-weight: bold; color: var(--sub); margin-bottom: 5px; }
+        .fc-icon { font-size: 32px; margin: 5px 0; }
+        .fc-temp { font-size: 18px; }
+        .fc-low { color: var(--sub); font-size: 14px; margin-left: 4px; }
+        #status-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div id="status-overlay">
+        <h2 id="status-msg">Updating Dashboard...</h2>
+        <p id="error-details" style="color: #f28b82; font-size: 14px;"></p>
+    </div>
+
+    <div class="header">
+        <div class="location">Chicago, IL</div>
+        <div id="date-time" class="time">--:--</div>
+    </div>
+
+    <div class="main-content">
+        <div class="current-main">
+            <div id="curr-icon" style="font-size: 64px;">--</div>
+            <div id="curr-temp" class="current-temp">--°</div>
+            <div id="curr-desc" class="current-desc">--</div>
+        </div>
+        <div class="details-grid">
+            <div><span class="label">Feels:</span><span id="feels-like">--</span></div>
+            <div><span class="label">Wind:</span><span id="wind">--</span></div>
+            <div><span class="label">Humidity:</span><span id="humidity">--</span></div>
+            <div><span class="label">Rain:</span><span id="precip">--</span></div>
+        </div>
+    </div>
+
+    <div class="forecast-container" id="forecast-row"></div>
+
+    <script>
+        const lat = 41.8781, lon = -87.6298;
+
+        async function fetchWeather() {
+            const statusMsg = document.getElementById('status-msg');
+            const errorDetails = document.getElementById('error-details');
+
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FChicago`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                
+                const data = await response.json();
+
+                // Populate UI
+                document.getElementById('curr-temp').textContent = Math.round(data.current.temperature_2m) + '°';
+                document.getElementById('feels-like').textContent = Math.round(data.current.apparent_temperature) + '°F';
+                document.getElementById('wind').textContent = data.current.wind_speed_10m + ' mph';
+                document.getElementById('humidity').textContent = data.current.relative_humidity_2m + '%';
+                document.getElementById('precip').textContent = data.current.precipitation + '"';
+                
+                const currentStatus = getWeatherInfo(data.current.weather_code);
+                document.getElementById('curr-desc').textContent = currentStatus.text;
+                document.getElementById('curr-icon').textContent = currentStatus.icon;
+
+                // 5-Day Forecast
+                const forecastRow = document.getElementById('forecast-row');
+                forecastRow.innerHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const date = new Date(data.daily.time[i] + 'T00:00');
+                    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    const dayStatus = getWeatherInfo(data.daily.weather_code[i]);
+                    forecastRow.innerHTML += `
+                        <div class="forecast-card">
+                            <div class="fc-day">${dayName}</div>
+                            <div class="fc-icon">${dayStatus.icon}</div>
+                            <div class="fc-temp">${Math.round(data.daily.temperature_2m_max[i])}°<span class="fc-low">${Math.round(data.daily.temperature_2m_min[i])}°</span></div>
+                        </div>`;
+                }
+                
+                // Hide overlay on success
+                document.getElementById('status-overlay').style.display = 'none';
+            } catch (e) {
+                statusMsg.textContent = "Unable to connect to Weather API";
+                errorDetails.textContent = e.message + ". Check your internet connection or browser security settings.";
+                console.error("Fetch error:", e);
+            }
+        }
+
+        function getWeatherInfo(code) {
+            const map = {
+                0: {text: "Clear", icon: "☀️"}, 1: {text: "Mainly Clear", icon: "🌤️"},
+                2: {text: "Partly Cloudy", icon: "⛅"}, 3: {text: "Overcast", icon: "☁️"},
+                45: {text: "Foggy", icon: "🌫️"}, 51: {text: "Drizzle", icon: "🌦️"},
+                61: {text: "Light Rain", icon: "🌧️"}, 63: {text: "Rain", icon: "🌧️"},
+                71: {text: "Light Snow", icon: "🌨️"}, 95: {text: "Thunderstorm", icon: "⛈️"}
+            };
+            return map[code] || {text: "Variable", icon: "🌤️"};
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('date-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', weekday: 'short' });
+        }
+
+        fetchWeather();
+        updateTime();
+        setInterval(fetchWeather, 600000);
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
